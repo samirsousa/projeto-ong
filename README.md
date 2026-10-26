@@ -15,9 +15,9 @@ Site feito em Python (Flask) com HTML, CSS, JavaScript e (banco de dados ainda n
 - E-mail: `admin@aepec.org.br`
 - Senha inicial: `aepec2025`
 
-**Troque a senha no painel antes de colocar o site no ar.**
+**LEMBRAR DE TROCAR a senha no painel antes de colocar o site no ar.**
 
-Se esquecerem a senha, rode no terminal:
+Se esquecere a senha, rode no terminal:
 
 ```
 flask --app app resetar-senha
@@ -53,14 +53,11 @@ O fundo do bloco do vídeo fica em `static/img/fotos/video-capa.jpg`.
 ## Vídeo institucional
 
 O vídeo fica em `static/video/institucional.mp4` e a capa em `static/video/capa.jpg`.
-Para trocar, substitua o arquivo mantendo o mesmo nome.
 
-Se um dia colocarem o vídeo no YouTube, cole o link em `video_youtube` no `config_site.py`.
-O site passa a usar o YouTube, que é mais leve para a hospedagem.
 
 ## Onde ficam os dados
 
-Na pasta `dados/` (criada sozinha na primeira vez que o site roda):
+Na pasta `dados/` :
 
 - `posts.json`: posts do Instagram e o histórico
 - `admin.json`: e-mail e senha (a senha fica protegida, não dá para ler)
@@ -68,20 +65,3 @@ Na pasta `dados/` (criada sozinha na primeira vez que o site roda):
 - `galeria.json` e `fotos_projetos.json`: fotos da galeria e dos projetos
 
 As fotos enviadas pelo painel ficam em `static/uploads/`.
-
-Quando forem usar um banco de dados, só o arquivo `dados.py` precisa mudar.
-
-## Colocar no ar (hospedagem gratuita)
-
-Recomendado: **PythonAnywhere** (plano gratuito). Ele guarda os arquivos,
-então os posts e as fotos enviadas não somem.
-
-Atenção: no plano gratuito do Render, os arquivos são apagados a cada atualização.
-Lá seria preciso usar banco de dados antes.
-
-Na hospedagem, defina estas variáveis de ambiente:
-
-- `AEPEC_SECRET_KEY`: um texto longo e aleatório (protege o login)
-- `AEPEC_HTTPS=1`: quando o site estiver com https
-
-E não rode com `debug=True` na hospedagem (a hospedagem usa o `app` direto, sem o `python app.py`).
