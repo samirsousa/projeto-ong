@@ -1,0 +1,30 @@
+{# Cartão de um post do Instagram. Usado na página Nos Acompanhe e na prévia do admin. #}
+{% macro cartao_post(post) %}
+{% set fmt = FORMATOS.get(post.formato, FORMATOS['foto']) %}
+{% set foto = foto_post(post) %}
+<article class="post" data-tipo="{{ post.filtro }}">
+  <a class="post-foto" href="{{ post.link }}" target="_blank" rel="noopener" aria-label="Abrir post no Instagram">
+    {% if foto %}
+      <img src="{{ foto }}" alt="{{ post.tema or 'Post da AEPEC no Instagram' }}" loading="lazy">
+    {% else %}
+      <span class="sem-foto">
+        <img src="{{ url_for('static', filename='img/logo-360.png') }}" alt="">
+        Ver post no Instagram
+      </span>
+    {% endif %}
+    <span class="formato"><span class="icone">{{ fmt.icone }}</span> {{ fmt.nome }}</span>
+    <span class="sobre">
+      <span>{{ 'Assistir no Instagram' if post.formato == 'reels' else 'Ver no Instagram' }}
+        <span class="icone" style="font-size:16px">{{ 'play_arrow' if post.formato == 'reels' else 'north_east' }}</span></span>
+    </span>
+  </a>
+  <div class="post-texto">
+    <div class="post-meta">
+      <strong>{{ post.tema or FILTROS.get(post.filtro, '') }}</strong>
+      <span title="Adicionado em {{ post.inserido_em|data_br }}">{{ post.inserido_em|relativo }}</span>
+    </div>
+    {% if post.legenda %}<p>{{ post.legenda }}</p>{% endif %}
+    {% if post.hashtags %}<div class="post-tags">{{ post.hashtags }}</div>{% endif %}
+  </div>
+</article>
+{% endmacro %}

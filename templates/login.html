@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block titulo %}Login Administrativo - AEPEC{% endblock %}
+{% block cabeca %}<meta name="robots" content="noindex">{% endblock %}
+
+{% block conteudo %}
+<section class="login-fundo">
+  <div class="bolha bolha-1"></div>
+  <div class="bolha bolha-2"></div>
+  <div class="container">
+    <div class="login-aviso">
+      <b>!</b>
+      <span><strong style="color:var(--texto)">Atenção:</strong> visitantes, voluntários e doadores navegam livremente sem precisar de login.</span>
+    </div>
+
+    <div class="login-caixa">
+      <div class="login-lado">
+        <div style="display:flex;flex-direction:column;gap:18px">
+          <a class="voltar" href="{{ url_for('inicio') }}"><span class="icone" style="font-size:18px">home</span> Voltar à Página Inicial</a>
+          <span class="logo-claro"><img src="{{ url_for('static', filename='img/logo-360.png') }}" alt="Logo Espaço Pequeno Cidadão"></span>
+          <div>
+            <h2>Cuidando do Futuro das Nossas Crianças</h2>
+            <p>Área para a equipe da AEPEC atualizar o site, como os posts da página Nos Acompanhe.</p>
+          </div>
+        </div>
+        <div class="base"><span class="icone" style="font-size:16px;color:#fea619">verified_user</span> Acesso restrito à equipe</div>
+      </div>
+
+      <div class="login-form">
+        <div class="interno">
+          <span class="selo selo-restrito"><span class="icone" style="font-size:16px">lock</span> Área Restrita • Apenas Administradores</span>
+          <h1>Painel Administrativo</h1>
+          <p class="intro">Para gerenciar o site, entre com o e-mail e a senha da administração.</p>
+
+          {% if erro %}
+          <div class="alerta alerta-erro" role="alert"><span class="icone">error</span><span>{{ erro }}</span></div>
+          {% endif %}
+          {% for tipo, texto in get_flashed_messages(with_categories=true) %}
+          <div class="alerta {{ 'alerta-ok' if tipo == 'ok' else 'alerta-erro' }}" role="status"><span class="icone">{{ 'check_circle' if tipo == 'ok' else 'error' }}</span><span>{{ texto }}</span></div>
+          {% endfor %}
+          <div class="alerta alerta-info oculto" id="aviso-senha" role="status">
+            <span class="icone">info</span>
+            <span>Esqueceu a senha? Peça para quem cuida do site rodar o comando de recuperação (está explicado no LEIAME).</span>
+          </div>
+
+          <form method="post" action="{{ url_for('login') }}" style="display:flex;flex-direction:column;gap:16px">
+            <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+            <div class="campo">
+              <div class="campo-topo"><label for="email">E-mail</label><span class="dica">Ex.: admin@aepec.org.br</span></div>
+              <div class="entrada">
+                <span class="icone">mail</span>
+                <input type="email" id="email" name="email" required autocomplete="username" placeholder="admin@aepec.org.br" value="{{ request.form.email or '' }}">
+              </div>
+            </div>
+            <div class="campo">
+              <div class="campo-topo">
+                <label for="senha">Senha</label>
+                <a class="link" href="#" onclick="document.getElementById('aviso-senha').classList.remove('oculto'); return false;">Esqueceu a senha?</a>
+              </div>
+              <div class="entrada">
+                <span class="icone">lock</span>
+                <input class="com-olho" type="password" id="senha" name="senha" required autocomplete="current-password" placeholder="Sua senha">
+                <button class="ver-senha" type="button" data-ver-senha="senha" aria-label="Mostrar senha"><span class="icone">visibility</span></button>
+              </div>
+            </div>
+            <label class="lembrar"><input type="checkbox" name="lembrar" value="1"> Manter conectado neste dispositivo</label>
+            <button class="botao botao-amarelo botao-largo" type="submit" style="padding:14px"><span class="icone">login</span> Acessar Painel</button>
+            <a class="botao botao-cinza botao-largo" href="{{ url_for('inicio') }}" style="background:transparent">Voltar à Página Inicial</a>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

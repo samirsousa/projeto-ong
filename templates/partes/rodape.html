@@ -1,0 +1,55 @@
+{# Rodapé igual em todas as páginas públicas. #}
+{% set raiz = '' if pagina == 'inicio' else url_for('inicio') %}
+<footer class="rodape">
+  <div class="container">
+    <div class="citacao">
+      <p>“Educação não transforma o mundo. Educação muda pessoas. Pessoas transformam o mundo.”</p>
+      <span>— Paulo Freire</span>
+    </div>
+
+    <div class="rodape-grade">
+      <div>
+        <div class="rodape-marca">
+          <img src="{{ url_for('static', filename='img/logo-360.png') }}" alt="Logo Espaço Pequeno Cidadão" width="76" height="72" loading="lazy">
+          <div><strong>AEPEC</strong><span>{{ site.nome_completo }}</span></div>
+        </div>
+        <p>Organização sem fins lucrativos que atende crianças, jovens e famílias em {{ site.regiao }}, com educação, alimentação e esporte.</p>
+        <div class="rodape-contato">
+          <span><span class="icone">location_on</span> {{ site.endereco }}</span>
+          <a href="mailto:{{ site.email }}"><span class="icone">mail</span> {{ site.email }}</a>
+          <a href="tel:{{ site.telefone_link }}"><span class="icone">call</span> {{ site.telefone }}</a>
+        </div>
+      </div>
+
+      <div>
+        <h3>Acesso Rápido</h3>
+        <ul>
+          <li><a href="{{ raiz }}#nossa-historia"><span class="icone">chevron_right</span> Nossa História</a></li>
+          <li><a href="{{ raiz }}#programas-projetos"><span class="icone">chevron_right</span> Programas e Projetos</a></li>
+          <li><a href="{{ raiz }}#impacto-galeria"><span class="icone">chevron_right</span> Galeria</a></li>
+          <li><a href="{{ url_for('familia') }}"><span class="icone">chevron_right</span> Família AEPEC</a></li>
+          <li><a href="{{ raiz }}#numeros"><span class="icone">chevron_right</span> Nossos Números</a></li>
+          <li><a href="{{ raiz }}#como-ajudar"><span class="icone">chevron_right</span> Seja Voluntário ou Doador</a></li>
+          <li><a href="{{ url_for('nos_acompanhe') }}"><span class="icone">chevron_right</span> Nos Acompanhe no Instagram</a></li>
+          <li><a href="{{ url_for('login') }}" style="color:#94a3b8"><span class="icone" style="color:#94a3b8">lock</span> Acesso Administrativo (Restrito)</a></li>
+        </ul>
+      </div>
+
+      <div class="rodape-redes">
+        <span class="selo" style="background:rgba(251,191,36,.15);color:#fcd34d;text-transform:uppercase;letter-spacing:.06em;font-size:11px">
+          <span class="pulso"></span> Comunidade &amp; Histórias Vivas
+        </span>
+        <h3>Fique Conectado nas Redes</h3>
+        <p>Acompanhe o dia a dia das nossas crianças e jovens no Instagram.</p>
+        <div class="redes">
+          <a class="botao botao-ig botao-pequeno" href="{{ url_for('nos_acompanhe') }}"><span class="icone">photo_camera</span> Nos acompanhe!</a>
+          <a class="rede" href="https://www.instagram.com/{{ site.instagram_usuario }}/" target="_blank" rel="noopener" aria-label="Instagram da AEPEC" title="Instagram"><span class="icone">photo_camera</span></a>
+          <a class="rede" href="mailto:{{ site.email }}" aria-label="Enviar e-mail" title="E-mail"><span class="icone">mail</span></a>
+          <a class="rede" href="{{ raiz }}#como-ajudar" aria-label="Fazer doação" title="Doar"><span class="icone">volunteer_activism</span></a>
+        </div>
+      </div>
+    </div>
+
+    <p class="copyright">© {{ ano }} AEPEC - {{ site.nome_completo }}. Todos os direitos reservados. Compromisso com a infância e a cidadania.</p>
+  </div>
+</footer>

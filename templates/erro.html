@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block titulo %}{{ codigo }} - AEPEC{% endblock %}
+{% block conteudo %}
+<section class="erro-pagina">
+  <div>
+    <strong>{{ codigo }}</strong>
+    <p>{{ mensagem }}</p>
+    <a class="botao botao-azul" href="{{ url_for('inicio') }}"><span class="icone">home</span> Voltar ao início</a>
+  </div>
+</section>
+{% endblock %}

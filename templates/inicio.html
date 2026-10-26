@@ -1,0 +1,292 @@
+{% extends "base.html" %}
+
+{# Os projetos ficam em projetos.py. As fotos dos projetos e da galeria são escolhidas no painel. #}
+
+{% block conteudo %}
+
+<!-- DESTAQUE PRINCIPAL -->
+<section class="hero">
+  <div class="bolha bolha-1"></div>
+  <div class="bolha bolha-2"></div>
+  <div class="container hero-grade">
+    <div class="hero-texto">
+      <span class="selo hero-selo"><span class="pulso"></span> Espaço Pequeno Cidadão • {{ site.regiao }}</span>
+      <h1>Transformando Esperança em
+        <span class="destaque-amarelo">Oportunidade Real<svg viewBox="0 0 200 8" fill="none" preserveAspectRatio="none" aria-hidden="true"><path d="M1 5.5C45 2.5 155 2.5 199 5.5" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></span>
+        para Nossas Crianças</h1>
+      <p>A AEPEC (Espaço Pequeno Cidadão) atende mais de 800 crianças e jovens com educação no contraturno, alimentação, esporte e informática.</p>
+      <div class="hero-botoes">
+        <a class="botao botao-amarelo" href="#como-ajudar"><span class="icone">volunteer_activism</span> Quero Fazer Parte / Doar</a>
+        <button class="botao botao-claro" type="button" data-abrir="janela-video">
+          <span class="play-bolinha"><span class="icone" style="font-size:18px">play_arrow</span></span> Assistir ao Vídeo Institucional
+        </button>
+      </div>
+    </div>
+
+    {# Logo da AEPEC no lugar das fotos #}
+    <div class="hero-logo">
+      <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo Espaço Pequeno Cidadão" width="957" height="912" fetchpriority="high">
+    </div>
+  </div>
+</section>
+
+<!-- NOSSOS NÚMEROS (os mesmos do vídeo institucional) -->
+<section class="faixa-numeros" id="numeros">
+  <div class="container">
+    <div class="faixa-topo">
+      <h2><span class="icone">bar_chart</span> Nossos Números</h2>
+    </div>
+    <div class="numeros">
+      {% for icone, valor, texto in [
+        ("schedule", "+1.400", "horas anuais dedicadas à educação"),
+        ("groups", "+800", "crianças e jovens atendidos"),
+        ("family_restroom", "+2.000", "famílias assistidas"),
+        ("lunch_dining", "+26.000", "refeições distribuídas ao ano"),
+        ("inventory_2", "+20 Ton", "alimentos distribuídos ao ano"),
+        ("volunteer_activism", "+3.000", "doações variadas ao ano"),
+      ] %}
+      <div class="numero">
+        <span class="bola"><span class="icone">{{ icone }}</span></span>
+        <strong>{{ valor }}</strong>
+        <span>{{ texto }}</span>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- PROGRAMAS E PROJETOS -->
+<section class="secao secao-alt" id="programas-projetos">
+  <div class="container">
+    <div class="cabeca-secao">
+      <div>
+        <span class="etiqueta">O que fazemos</span>
+        <h2 class="titulo-secao">Programas e Projetos</h2>
+        <p class="subtitulo">Atividades no contraturno escolar para as crianças e jovens atendidos pela AEPEC.</p>
+      </div>
+    </div>
+    <div class="grade-3">
+      {% for p in projetos %}
+      {% set fotos = fotos_projetos.get(p.id, []) %}
+      <article class="cartao">
+        <div class="cartao-foto">
+          {# Primeira foto do projeto. Sem foto, mostra "Em breve". #}
+          <img src="{{ url_for('static', filename=fotos[0]) if fotos else url_for('static', filename='img/em-breve.svg') }}" alt="{{ p.nome }}" loading="lazy">
+          <span class="selo" style="background:{{ p.cor }}">{{ p.selo }}</span>
+        </div>
+        <div class="cartao-corpo">
+          <h3>{{ p.nome }}</h3>
+          <p>{{ p.resumo }}</p>
+          <button class="mais" type="button" data-info="{{ p.id }}">Saiba mais <span class="icone">add_circle</span></button>
+        </div>
+      </article>
+      {# Janela do "Saiba mais": fotos do projeto (se tiver) e o texto completo #}
+      <template id="info-{{ p.id }}" data-titulo="{{ p.nome }}" data-largo="sim">
+        {% if fotos %}
+        <div class="fotos-projeto {{ 'uma' if fotos|length == 1 }}">
+          {% for f in fotos %}<img src="{{ url_for('static', filename=f) }}" alt="{{ p.nome }}" loading="lazy">{% endfor %}
+        </div>
+        {% endif %}
+        <div class="texto-projeto">{% include "projetos/" ~ p.id ~ ".html" %}</div>
+      </template>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- VÍDEO E GALERIA -->
+<section class="secao" id="nossa-historia">
+  <div class="container">
+    <div class="video-banner">
+      {# Sem foto de fundo fica só o fundo escuro, para não brigar com o texto #}
+      {% if foto_local('video-capa') %}<img src="{{ foto_local('video-capa') }}" alt="" loading="lazy">{% endif %}
+      <div class="video-conteudo">
+        <button class="botao-play" type="button" data-abrir="janela-video" aria-label="Assistir ao vídeo institucional"><span class="icone">play_arrow</span></button>
+        <small>Vídeo Institucional{% if site.video_duracao %} • {{ site.video_duracao }}{% endif %}</small>
+        <h3>Conheça a AEPEC</h3>
+        <p>O dia a dia do Espaço Pequeno Cidadão, com depoimentos da equipe e de quem foi aluna e hoje é professora.</p>
+      </div>
+    </div>
+
+    <div id="impacto-galeria">
+      <div class="galeria-cabeca">
+        <div>
+          <span class="etiqueta">Galeria</span>
+          <h3>Nosso Dia a Dia</h3>
+        </div>
+        {% if galeria %}
+        <div class="abas" data-alvo="galeria" role="group" aria-label="Filtrar fotos">
+          <button class="aba ativa" type="button" data-filtro="todos" aria-pressed="true">Todas</button>
+          {% for chave, nome in GALERIA_TIPOS.items() %}
+          <button class="aba" type="button" data-filtro="{{ chave }}" aria-pressed="false">{{ nome }}</button>
+          {% endfor %}
+        </div>
+        {% endif %}
+      </div>
+      {% if galeria %}
+      <div class="galeria" id="galeria">
+        {% for g in galeria %}
+        <button class="foto-galeria" type="button" data-tipo="{{ g.tipo }}" data-ampliar data-titulo="{{ g.titulo }}" data-texto="{{ g.texto }}">
+          <img src="{{ url_for('static', filename=g.foto) }}" alt="{{ g.titulo or GALERIA_TIPOS.get(g.tipo, '') }}" loading="lazy">
+          <span class="sobre"><small>{{ GALERIA_TIPOS.get(g.tipo, '') }}</small>{% if g.titulo %}<strong>{{ g.titulo }}</strong>{% endif %}</span>
+        </button>
+        {% endfor %}
+        <p class="vazio vazio-filtro oculto">Ainda não há fotos deste tipo.</p>
+      </div>
+      {% else %}
+      <div class="em-breve-caixa pequena"><span class="icone">photo_library</span><h2>Fotos em breve!</h2></div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<!-- PRÉVIA DO INSTAGRAM (mostra os 6 posts mais novos cadastrados no admin) -->
+<section class="secao secao-alt" id="instagram">
+  <div class="container">
+    <div class="perfil-mini">
+      <div class="quem">
+        <div class="anel"><div class="dentro"><img src="{{ url_for('static', filename='img/marca.png') }}" alt="Logo AEPEC"></div></div>
+        <div>
+          <h3>@{{ site.instagram_usuario }}</h3>
+          <p>
+            {% if site.instagram_seguidores %}<strong>{{ site.instagram_seguidores }}</strong> seguidores • {% endif %}
+            {% if site.instagram_publicacoes %}<strong>{{ site.instagram_publicacoes }}</strong> publicações • {% endif %}
+            Acompanhe nosso dia a dia
+          </p>
+        </div>
+      </div>
+      <a class="botao botao-ig" href="{{ url_for('nos_acompanhe') }}"><span class="icone">photo_camera</span> Nos acompanhe!</a>
+    </div>
+    {% if posts %}
+    <div class="mini-grade">
+      {% for post in posts %}
+      {% set foto = foto_post(post) %}
+      <a class="mini-post" href="{{ url_for('nos_acompanhe') }}" aria-label="{{ post.tema or 'Ver post' }}">
+        {% if foto %}<img src="{{ foto }}" alt="{{ post.tema }}" loading="lazy">
+        {% else %}<span class="sem-foto" style="display:flex;height:100%;align-items:center;justify-content:center"><img src="{{ url_for('static', filename='img/logo-360.png') }}" alt="" style="width:60%;height:auto"></span>{% endif %}
+        <span class="sobre">{{ post.tema or 'Ver post' }}</span>
+      </a>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="em-breve-caixa pequena">
+      <span class="icone">photo_library</span>
+      <h2>Posts em breve!</h2>
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+<!-- COMO AJUDAR -->
+<section class="secao" id="como-ajudar">
+  <div class="container">
+    <div class="ajudar-caixa">
+      <div class="ajudar-topo">
+        <div>
+          <small>Como Ajudar</small>
+          <h2>Três Maneiras de Apoiar Nossas Crianças</h2>
+          <p>Toda ajuda conta: dinheiro, tempo ou doação de itens.</p>
+        </div>
+        <button class="pix" type="button" data-copiar="{{ site.pix }}">
+          <span class="icone">qr_code_2</span> Chave PIX: {{ site.pix }} <span class="icone" style="font-size:18px">content_copy</span>
+        </button>
+      </div>
+      <div class="grade-ajuda">
+        <div class="ajuda">
+          <span class="quadrado" style="background:#fef3c7;color:#b45309"><span class="icone">savings</span></span>
+          <h3>Doação em Dinheiro</h3>
+          <p>Doe qualquer valor pelo PIX e ajude a manter as atividades e a alimentação das crianças.</p>
+          <button class="botao botao-amarelo botao-largo" type="button" data-info="financeira">Doar com PIX</button>
+        </div>
+        <div class="ajuda">
+          <span class="quadrado" style="background:#dbeafe;color:#1a62d6"><span class="icone">handshake</span></span>
+          <h3>Seja Voluntário</h3>
+          <p>Quer ajudar com seu tempo ou conhecimento? Fale com a gente para saber como participar.</p>
+          <button class="botao botao-azul botao-largo" type="button" data-info="voluntario">Quero ser Voluntário</button>
+        </div>
+        <div class="ajuda">
+          <span class="quadrado" style="background:#e0f2fe;color:#0d5cab"><span class="icone">kitchen</span></span>
+          <h3>Doação de Itens</h3>
+          <p>Quer doar alimentos, roupas ou materiais? Fale com a gente para combinar a entrega.</p>
+          <button class="botao botao-cinza botao-largo" type="button" data-info="materiais">Como doar itens</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{# Textos das janelas de "Como ajudar" #}
+<template id="info-financeira" data-titulo="Doação pelo PIX" data-pix="sim">
+  <p>Sua doação ajuda a manter as atividades e a alimentação das crianças e jovens atendidos pela AEPEC.</p>
+</template>
+<template id="info-voluntario" data-titulo="Seja Voluntário na AEPEC">
+  <p>Mande um e-mail para <a class="link-seta" href="mailto:{{ site.email }}">{{ site.email }}</a> ou ligue para <a class="link-seta" href="tel:{{ site.telefone_link }}">{{ site.telefone }}</a> contando como você gostaria de ajudar.</p>
+</template>
+<template id="info-materiais" data-titulo="Doação de Itens">
+  <p>Para doar alimentos, roupas ou materiais, fale com a gente pelo telefone <a class="link-seta" href="tel:{{ site.telefone_link }}">{{ site.telefone }}</a> ou pelo e-mail <a class="link-seta" href="mailto:{{ site.email }}">{{ site.email }}</a> para combinar a entrega.</p>
+  <p style="margin-top:10px">Nosso endereço: {{ site.endereco }}.</p>
+</template>
+
+<!-- JANELA: informações (projetos e formas de ajudar) -->
+<div class="janela" id="janela-info" role="dialog" aria-modal="true" aria-labelledby="info-titulo">
+  <div class="janela-caixa">
+    <div class="janela-topo">
+      <h3 id="info-titulo">Informações</h3>
+      <button class="fechar" type="button" data-fechar aria-label="Fechar"><span class="icone">close</span></button>
+    </div>
+    <div class="janela-corpo">
+      <div id="info-texto" style="color:var(--texto-2)"></div>
+      <div class="caixa-pix" id="info-pix">
+        <strong style="color:var(--azul-texto);font-size:14px">Chave PIX Oficial (e-mail):</strong>
+        <div class="linha">
+          <code style="word-break:break-all">{{ site.pix }}</code>
+          <button class="copiar" type="button" data-copiar="{{ site.pix }}"><span class="icone" style="font-size:16px">content_copy</span> Copiar</button>
+        </div>
+        {% if site.banco %}<small>{{ site.banco }}</small>{% endif %}
+      </div>
+      <div class="janela-rodape"><button class="botao botao-amarelo" type="button" data-fechar>Entendi, obrigado!</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- JANELA: vídeo institucional -->
+<div class="janela" id="janela-video" role="dialog" aria-modal="true" aria-labelledby="video-titulo">
+  <div class="janela-caixa janela-grande">
+    <div class="janela-topo">
+      <h3 id="video-titulo"><span class="icone">play_circle</span> Vídeo Institucional AEPEC</h3>
+      <button class="fechar" type="button" data-fechar aria-label="Fechar"><span class="icone">close</span></button>
+    </div>
+    <div class="video-area">
+      {% if site.video_youtube %}
+        {# Aceita links do tipo youtube.com/watch?v=ID ou youtu.be/ID #}
+        {% set id_video = site.video_youtube.split('v=')[-1].split('youtu.be/')[-1].split('&')[0].split('?')[0] %}
+        <iframe src="https://www.youtube-nocookie.com/embed/{{ id_video }}" title="Vídeo institucional da AEPEC" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      {% elif site.video_arquivo %}
+        {# preload="none": o vídeo só começa a baixar quando a pessoa der play #}
+        <video controls playsinline preload="none" poster="{{ url_for('static', filename=site.video_capa) }}">
+          <source src="{{ url_for('static', filename=site.video_arquivo) }}" type="video/mp4">
+          Seu navegador não consegue tocar este vídeo.
+        </video>
+      {% else %}
+        <div class="video-aviso">
+          <span class="icone">movie</span>
+          <strong style="font-size:20px">Vídeo em breve</strong>
+          <span>O vídeo institucional ainda está sendo preparado.</span>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<!-- JANELA: foto ampliada da galeria -->
+<div class="janela" id="janela-foto" role="dialog" aria-modal="true" aria-labelledby="foto-titulo">
+  <div class="janela-caixa janela-grande">
+    <div class="janela-topo">
+      <h3 id="foto-titulo">Foto da Galeria</h3>
+      <button class="fechar" type="button" data-fechar aria-label="Fechar"><span class="icone">close</span></button>
+    </div>
+    <div class="foto-ampliada"><img id="foto-img" src="" alt=""></div>
+    <div class="janela-corpo"><p id="foto-texto"></p></div>
+  </div>
+</div>
+{% endblock %}

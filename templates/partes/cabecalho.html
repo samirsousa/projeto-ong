@@ -1,0 +1,54 @@
+{# Cabeçalho igual em todas as páginas públicas. #}
+{% set raiz = '' if pagina == 'inicio' else url_for('inicio') %}
+<header class="cabecalho">
+  <div class="container">
+    <a class="marca" href="{{ url_for('inicio') }}" aria-label="AEPEC - Página inicial">
+      <img src="{{ url_for('static', filename='img/logo-360.png') }}" alt="Logo Espaço Pequeno Cidadão" width="59" height="56">
+      <span class="marca-texto"><strong>AEPEC</strong><span>Espaço Pequeno Cidadão</span></span>
+    </a>
+
+    <nav class="menu" aria-label="Menu principal">
+      <a href="{{ raiz }}#nossa-historia">Nossa História</a>
+      <a href="{{ raiz }}#programas-projetos">Projetos</a>
+      <a href="{{ raiz }}#impacto-galeria">Galeria</a>
+      <a href="{{ url_for('familia') }}" class="{{ 'ativo' if pagina == 'familia' }}">Família AEPEC</a>
+      <a href="{{ url_for('nos_acompanhe') }}" class="{{ 'ativo' if pagina == 'instagram' }}">
+        {% if pagina == 'instagram' %}<span class="ponto"></span>{% else %}<span class="icone" style="font-size:17px">photo_camera</span>{% endif %}
+        Nos Acompanhe
+      </a>
+      <a href="{{ raiz }}#numeros">Números</a>
+    </nav>
+
+    <div class="acoes">
+      <a class="botao botao-amarelo botao-pequeno so-desktop" href="{{ raiz }}#como-ajudar">
+        <span class="icone">volunteer_activism</span> Fazer Doação
+      </a>
+      <a class="botao-admin so-desktop" href="{{ url_for('painel') if logado else url_for('login') }}" title="Área restrita para administradores">
+        <span class="icone" style="font-size:18px">lock</span> Admin
+      </a>
+      <button class="botao-icone" type="button" data-trocar-tema>
+        <span class="icone tema-lua">dark_mode</span><span class="icone tema-sol">light_mode</span>
+      </button>
+      <button class="botao-icone botao-menu" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="gaveta">
+        <span class="icone">menu</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- Menu que abre no celular e tablet -->
+<div class="gaveta" id="gaveta">
+  <nav aria-label="Menu do celular">
+    <a class="item" href="{{ url_for('inicio') }}#topo"><span class="icone">home</span> Início</a>
+    <a class="item" href="{{ raiz }}#nossa-historia"><span class="icone">auto_stories</span> Nossa História</a>
+    <a class="item" href="{{ raiz }}#programas-projetos"><span class="icone">school</span> Programas &amp; Projetos</a>
+    <a class="item" href="{{ raiz }}#impacto-galeria"><span class="icone">photo_library</span> Galeria</a>
+    <a class="item {{ 'ativo' if pagina == 'familia' }}" href="{{ url_for('familia') }}"><span class="icone">diversity_3</span> Família AEPEC</a>
+    <a class="item {{ 'ativo' if pagina == 'instagram' }}" href="{{ url_for('nos_acompanhe') }}"><span class="icone">photo_camera</span> Nos Acompanhe</a>
+    <a class="item" href="{{ raiz }}#numeros"><span class="icone">bar_chart</span> Nossos Números</a>
+    <div class="botoes">
+      <a class="botao botao-amarelo" href="{{ raiz }}#como-ajudar"><span class="icone">volunteer_activism</span> Fazer Doação / Como Ajudar</a>
+      <a class="botao botao-cinza" href="{{ url_for('painel') if logado else url_for('login') }}"><span class="icone">lock</span> Área do Administrador</a>
+    </div>
+  </nav>
+</div>

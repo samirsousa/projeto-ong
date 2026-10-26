@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block titulo %}AEPEC - {{ site.nome_completo }}{% endblock %}</title>
+  <meta name="description" content="{% block descricao %}A AEPEC (Espaço Pequeno Cidadão) atua com educação complementar, alimentação, esporte e cultura para crianças e jovens da comunidade.{% endblock %}">
+  <meta name="theme-color" content="#1a62d6">
+
+  <!-- Ícone da aba do navegador (logo da AEPEC) -->
+  <link rel="icon" href="{{ url_for('static', filename='img/favicon.ico') }}" sizes="any">
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/favicon-192.png') }}">
+  <link rel="apple-touch-icon" href="{{ url_for('static', filename='img/apple-touch-icon.png') }}">
+
+  <!-- Aplica o modo escuro antes de desenhar a página, para não "piscar" -->
+  <script>
+    (function () {
+      var tema = null;
+      try { tema = localStorage.getItem("tema"); } catch (e) {}
+      if (!tema) tema = window.matchMedia("(prefers-color-scheme: dark)").matches ? "escuro" : "claro";
+      document.documentElement.setAttribute("data-tema", tema);
+      // Navegador sem transição nativa entre páginas usa a nossa
+      if (!("onpagereveal" in window)) document.documentElement.classList.add("sem-vt");
+      // Avisa o CSS que o JavaScript está ligado (para tocar as animações)
+      document.documentElement.classList.add("js");
+    })();
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0..1,0&display=block" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/estilo.css') }}">
+  {% block cabeca %}{% endblock %}
+</head>
+<body>
+  {% block cabecalho %}{% include "partes/cabecalho.html" %}{% endblock %}
+
+  <main id="topo">
+    {% block conteudo %}{% endblock %}
+  </main>
+
+  {% block rodape %}{% include "partes/rodape.html" %}{% endblock %}
+
+  <!-- Aviso rápido (ex.: "Chave PIX copiada") -->
+  <div class="aviso" id="aviso" role="status" aria-live="polite">
+    <span class="icone">check_circle</span><span></span>
+  </div>
+
+  <script src="{{ url_for('static', filename='js/site.js') }}"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

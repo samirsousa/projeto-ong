@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block titulo %}Família AEPEC - Nossa Equipe{% endblock %}
+{% block descricao %}Conheça a equipe que mantém o Espaço Pequeno Cidadão funcionando todos os dias.{% endblock %}
+
+{% block conteudo %}
+
+<!-- APRESENTAÇÃO (texto do site original da AEPEC) -->
+<section class="familia-topo">
+  <div class="bolha bolha-1"></div>
+  <div class="bolha bolha-2"></div>
+  <div class="container familia-grade">
+    <div class="familia-texto">
+      <span class="etiqueta">Nossa Equipe</span>
+      <h1>Família AEPEC</h1>
+      <p>Além de você, que nos ajuda a manter e garantir o futuro das nossas crianças e jovens, existem as pessoas que são responsáveis por manter nosso projeto funcionando todos os dias.</p>
+      <p>Vamos conhecê-las um pouco melhor?</p>
+    </div>
+
+    {# Mosaico com as fotos de todos. Clicar leva até o texto da pessoa. #}
+    {% if equipe %}
+    {% set conta = namespace(n=0) %}
+    <div class="mosaico" aria-label="Fotos da equipe">
+      {% for m in equipe %}
+        {% for foto in m.fotos %}
+        <a class="mosaico-foto" href="#pessoa-{{ m.id }}" title="{{ m.nome }}" data-revelar style="--atraso: {{ conta.n * 60 }}ms">{% set conta.n = conta.n + 1 %}
+          <img src="{{ url_for('static', filename=foto) }}" alt="{{ m.nome }}" loading="lazy">
+        </a>
+        {% endfor %}
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+<!-- UM CARTÃO POR PESSOA -->
+<section class="secao secao-alt">
+  <div class="container">
+    {% if equipe %}
+    <div class="equipe">
+      {% for m in equipe %}
+      <article class="pessoa" id="pessoa-{{ m.id }}" data-revelar style="--atraso: {{ (loop.index0 % 2) * 120 }}ms">
+        <header class="pessoa-topo">
+          <div class="pessoa-fotos {{ 'dupla' if m.fotos|length > 1 }}">
+            {% for foto in m.fotos %}
+            <img src="{{ url_for('static', filename=foto) }}" alt="{{ m.nome }}" loading="lazy">
+            {% else %}
+            <span class="sem-foto-pessoa"><img src="{{ url_for('static', filename='img/marca.png') }}" alt=""></span>
+            {% endfor %}
+          </div>
+          <div>
+            <h2>{{ m.nome }}</h2>
+            {% if m.cargo %}<p class="pessoa-cargo">{{ m.cargo }}</p>{% endif %}
+            {% if m.area %}<p class="pessoa-area">{{ m.area }}</p>{% endif %}
+          </div>
+        </header>
+        <div class="pessoa-texto">{{ m.texto|paragrafos }}</div>
+      </article>
+      {% endfor %}
+    </div>
+    {% else %}
+    <p class="vazio">A equipe ainda não foi cadastrada.</p>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

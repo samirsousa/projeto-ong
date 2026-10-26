@@ -1,0 +1,19 @@
+{# Cabeçalho das páginas do painel do administrador. #}
+<header class="cabecalho cabecalho-admin">
+  <div class="container">
+    <a class="marca" href="{{ url_for('painel') }}">
+      <img src="{{ url_for('static', filename='img/logo-360.png') }}" alt="Logo Espaço Pequeno Cidadão" width="59" height="56">
+      <span class="marca-texto"><strong>AEPEC</strong><span>Painel do Administrador</span></span>
+    </a>
+    <div class="acoes">
+      <a class="botao botao-cinza botao-pequeno so-desktop" href="{{ url_for('inicio') }}"><span class="icone">open_in_new</span> Ver site</a>
+      <button class="botao-icone" type="button" data-trocar-tema>
+        <span class="icone tema-lua">dark_mode</span><span class="icone tema-sol">light_mode</span>
+      </button>
+      <form method="post" action="{{ url_for('sair') }}">
+        <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+        <button class="botao botao-perigo botao-pequeno" type="submit"><span class="icone">logout</span> Sair</button>
+      </form>
+    </div>
+  </div>
+</header>

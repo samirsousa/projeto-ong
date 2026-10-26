@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block titulo %}{{ 'Editar' if membro else 'Adicionar' }} pessoa - Painel AEPEC{% endblock %}
+{% block cabeca %}<meta name="robots" content="noindex">{% endblock %}
+{% block cabecalho %}{% include "partes/cabecalho_admin.html" %}{% endblock %}
+{% block rodape %}{% endblock %}
+
+{# Se o formulário voltou com erro, mostra o que a pessoa já tinha digitado #}
+{% set valor = form or membro or {} %}
+
+{% block conteudo %}
+<section class="painel">
+  <div class="container" style="max-width:980px">
+    <a class="link-seta" href="{{ url_for('painel') }}#familia"><span class="icone">arrow_back</span> Voltar ao painel</a>
+
+    <div class="painel-titulo" style="margin:16px 0 20px">
+      <h1>{{ 'Editar ' ~ membro.nome if membro else 'Adicionar pessoa à Família AEPEC' }}</h1>
+      <p>Os textos aparecem na página Família AEPEC do jeito que forem escritos aqui.</p>
+    </div>
+
+    {% with mensagens = get_flashed_messages(with_categories=true) %}
+      {% for tipo, texto in mensagens %}
+      <div class="alerta {{ 'alerta-ok' if tipo == 'ok' else 'alerta-erro' }}" role="alert" style="margin-bottom:16px">
+        <span class="icone">{{ 'check_circle' if tipo == 'ok' else 'error' }}</span><span>{{ texto }}</span>
+      </div>
+      {% endfor %}
+    {% endwith %}
+
+    <form class="bloco" method="post" enctype="multipart/form-data" id="form-membro">
+      <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+      <div class="bloco-corpo campos">
+        <div class="campo">
+          <div class="campo-topo"><label for="nome">Nome *</label><span class="dica">Ex.: Tia Cida</span></div>
+          <input type="text" id="nome" name="nome" required maxlength="80" value="{{ valor.nome or '' }}">
+        </div>
+        <div class="duas-colunas">
+          <div class="campo">
+            <div class="campo-topo"><label for="cargo">Cargo</label><span class="dica">Ex.: Educadora Social</span></div>
+            <input type="text" id="cargo" name="cargo" maxlength="80" value="{{ valor.cargo or '' }}">
+          </div>
+          <div class="campo">
+            <div class="campo-topo"><label for="area">Área (opcional)</label><span class="dica">Ex.: Inglês e redação</span></div>
+            <input type="text" id="area" name="area" maxlength="80" value="{{ valor.area or '' }}">
+          </div>
+        </div>
+        <div class="campo">
+          <div class="campo-topo"><label for="texto">Texto</label><span class="dica">Deixe uma linha em branco para começar outro parágrafo.</span></div>
+          <textarea id="texto" name="texto" maxlength="4000" style="min-height:280px">{{ valor.texto or '' }}</textarea>
+        </div>
+
+        <div class="duas-colunas">
+          {% for vaga in [0, 1] %}
+          {% set atual = membro.fotos[vaga] if membro and membro.fotos|length > vaga else None %}
+          <div class="campo">
+            <span class="rotulo">{{ 'Foto' if vaga == 0 else 'Segunda foto (só para duplas)' }}</span>
+            <div class="foto-membro">
+              <span class="previa-redonda">
+                {% if atual %}<img src="{{ url_for('static', filename=atual) }}" alt="Foto atual" id="previa{{ vaga }}">
+                {% else %}<img src="" alt="" id="previa{{ vaga }}" class="oculto"><span class="icone" id="vazio{{ vaga }}">person</span>{% endif %}
+              </span>
+              <div style="display:flex;flex-direction:column;gap:8px;min-width:0">
+                <label class="botao botao-cinza botao-pequeno" style="position:relative;overflow:hidden">
+                  <span class="icone">upload</span> {{ 'Trocar foto' if atual else 'Escolher foto' }}
+                  <input type="file" name="foto{{ vaga }}" accept="image/jpeg,image/png,image/webp" data-previa="{{ vaga }}" style="position:absolute;inset:0;opacity:0;cursor:pointer">
+                </label>
+                {% if atual %}
+                <label class="lembrar" style="font-size:13px"><input type="checkbox" name="tirar{{ vaga }}" value="1"> Tirar esta foto</label>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        <small class="dica">A foto é cortada em quadrado e aparece redonda no site. Use uma foto com o rosto no meio.</small>
+
+        <div class="botoes-form">
+          <button class="botao botao-azul" type="submit"><span class="icone">save</span> Salvar</button>
+          <a class="botao botao-cinza" href="{{ url_for('painel') }}#familia">Cancelar</a>
+        </div>
+      </div>
+    </form>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  // Mostra a foto escolhida antes de salvar
+  document.querySelectorAll("[data-previa]").forEach(function (campo) {
+    campo.addEventListener("change", function () {
+      var n = campo.getAttribute("data-previa");
+      var img = document.getElementById("previa" + n);
+      var vazio = document.getElementById("vazio" + n);
+      if (!campo.files[0]) return;
+      img.src = URL.createObjectURL(campo.files[0]);
+      img.classList.remove("oculto");
+      if (vazio) vazio.classList.add("oculto");
+    });
+  });
+</script>
+{% endblock %}

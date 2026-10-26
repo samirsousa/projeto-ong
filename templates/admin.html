@@ -1,0 +1,455 @@
+{% extends "base.html" %}
+
+{% block titulo %}Painel do Administrador - AEPEC{% endblock %}
+{% block cabeca %}<meta name="robots" content="noindex">{% endblock %}
+
+{# Cabeçalho próprio do painel #}
+{% block cabecalho %}
+{% include "partes/cabecalho_admin.html" %}
+{% endblock %}
+
+{% block rodape %}{% endblock %}
+
+{% block conteudo %}
+<section class="painel">
+  <div class="container painel-grade">
+
+    <!-- Menu lateral do painel (só em telas grandes) -->
+    <nav class="painel-lado" aria-label="Seções do painel">
+      <a href="#novo-post"><span class="icone">add_photo_alternate</span> Novo post</a>
+      <a href="#historico"><span class="icone">history</span> Histórico de posts</a>
+      <a href="#projetos"><span class="icone">photo_library</span> Fotos dos projetos</a>
+      <a href="#galeria"><span class="icone">collections</span> Galeria</a>
+      <a href="#familia"><span class="icone">diversity_3</span> Família AEPEC</a>
+      <a href="#seguranca"><span class="icone">key</span> Senha de acesso</a>
+      <hr>
+      <a href="{{ url_for('nos_acompanhe') }}"><span class="icone">photo_camera</span> Ver Nos Acompanhe</a>
+      <a href="{{ url_for('inicio') }}"><span class="icone">home</span> Ver página inicial</a>
+      <a href="{{ url_for('familia') }}"><span class="icone">groups</span> Ver Família AEPEC</a>
+    </nav>
+
+    <div class="painel-conteudo">
+      <!-- Atalhos no celular -->
+      <div class="painel-atalhos">
+        <a class="botao botao-cinza botao-pequeno" href="#novo-post"><span class="icone">add</span> Novo post</a>
+        <a class="botao botao-cinza botao-pequeno" href="#historico"><span class="icone">history</span> Histórico</a>
+        <a class="botao botao-cinza botao-pequeno" href="#projetos"><span class="icone">photo_library</span> Projetos</a>
+        <a class="botao botao-cinza botao-pequeno" href="#galeria"><span class="icone">collections</span> Galeria</a>
+        <a class="botao botao-cinza botao-pequeno" href="#familia"><span class="icone">diversity_3</span> Equipe</a>
+        <a class="botao botao-cinza botao-pequeno" href="#seguranca"><span class="icone">key</span> Senha</a>
+        <a class="botao botao-cinza botao-pequeno" href="{{ url_for('nos_acompanhe') }}"><span class="icone">open_in_new</span> Ver site</a>
+      </div>
+
+      <div class="painel-titulo">
+        <h1>Olá! O que vamos atualizar hoje?</h1>
+        <p>Os posts cadastrados aqui aparecem na página <a class="link-seta" href="{{ url_for('nos_acompanhe') }}">Nos Acompanhe</a> e os 6 mais novos aparecem também na página inicial.</p>
+      </div>
+
+      {% with mensagens = get_flashed_messages(with_categories=true) %}
+        {% for tipo, texto in mensagens %}
+        <div class="alerta {{ 'alerta-ok' if tipo == 'ok' else 'alerta-erro' }}" role="alert">
+          <span class="icone">{{ 'check_circle' if tipo == 'ok' else 'error' }}</span><span>{{ texto }}</span>
+        </div>
+        {% endfor %}
+      {% endwith %}
+
+      <div class="resumo">
+        <div><span class="quadrado"><span class="icone">visibility</span></span><span><strong>{{ total_ativos }}</strong><small>posts no site</small></span></div>
+        <div><span class="quadrado"><span class="icone">history</span></span><span><strong>{{ posts|length }}</strong><small>no histórico</small></span></div>
+        <div><span class="quadrado"><span class="icone">schedule</span></span><span><strong style="font-size:17px">{{ posts[0].inserido_em|data_br(false) if posts else '-' }}</strong><small>último post adicionado</small></span></div>
+      </div>
+
+      <!-- NOVO POST -->
+      <section class="bloco" id="novo-post">
+        <div class="bloco-topo">
+          <h2><span class="icone">add_photo_alternate</span> Adicionar post do Instagram</h2>
+          <p>Cole o link do post e escolha o tipo. Os outros campos deixam o cartão igual aos que já estão no site.</p>
+        </div>
+        <div class="bloco-corpo">
+          <form class="form-post" method="post" action="{{ url_for('novo_post') }}" enctype="multipart/form-data" id="form-post">
+            <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+            <div class="campos">
+              <div class="campo">
+                <div class="campo-topo"><label for="link">Link do post *</label><span class="dica">Ex.: https://www.instagram.com/p/ABC123/</span></div>
+                <div class="entrada">
+                  <span class="icone">link</span>
+                  <input type="url" id="link" name="link" required placeholder="https://www.instagram.com/p/..." inputmode="url">
+                </div>
+                <small class="dica" id="link-aviso"></small>
+              </div>
+
+              <div class="campo">
+                <span class="rotulo">Tipo do post (filtro da página) *</span>
+                <div class="escolhas">
+                  {% for chave, nome in FILTROS.items() %}
+                  <label class="escolha"><input type="radio" name="filtro" value="{{ chave }}" required {{ 'checked' if loop.first }}><span>{{ nome }}</span></label>
+                  {% endfor %}
+                </div>
+              </div>
+
+              <div class="campo">
+                <span class="rotulo">Formato *</span>
+                <div class="escolhas">
+                  {% for chave, f in FORMATOS.items() %}
+                  <label class="escolha"><input type="radio" name="formato" value="{{ chave }}" required {{ 'checked' if chave == 'reels' }}><span><span class="icone">{{ f.icone }}</span> {{ f.nome }}</span></label>
+                  {% endfor %}
+                </div>
+              </div>
+
+              <div class="campo">
+                <div class="campo-topo"><label for="tema">Tema</label><span class="dica">Aparece em azul no cartão. Ex.: Oficina Literária</span></div>
+                <input type="text" id="tema" name="tema" maxlength="60" placeholder="Ex.: Esporte & Cidadania">
+              </div>
+
+              <div class="campo">
+                <div class="campo-topo"><label for="legenda">Legenda</label><span class="dica"><span id="conta-legenda">0</span>/600</span></div>
+                <textarea id="legenda" name="legenda" maxlength="600" placeholder="Pode copiar o texto do post no Instagram."></textarea>
+              </div>
+
+              <div class="campo">
+                <label for="hashtags">Hashtags</label>
+                <input type="text" id="hashtags" name="hashtags" maxlength="300" placeholder="#AEPEC #PequenoCidadao">
+              </div>
+
+              <div class="campo">
+                <span class="rotulo">Foto de capa</span>
+                <label class="envio-foto" id="envio-foto">
+                  <input type="file" name="imagem" id="imagem" accept="image/jpeg,image/png,image/webp">
+                  <span class="icone">cloud_upload</span>
+                  <span id="envio-texto"><strong>Clique para escolher</strong> ou arraste a imagem aqui<br><small>JPG, PNG ou WEBP, até 8 MB. Se não enviar, aparece a logo.</small></span>
+                </label>
+              </div>
+
+              <div class="botoes-form">
+                <button class="botao botao-azul" type="submit"><span class="icone">add</span> Adicionar ao site</button>
+                <button class="botao botao-cinza" type="reset"><span class="icone">restart_alt</span> Limpar</button>
+              </div>
+            </div>
+
+            <!-- Prévia de como o post vai aparecer -->
+            <div class="previa-lado">
+              <span class="rotulo">Prévia no site</span>
+              <article class="post">
+                <span class="post-foto">
+                  <span class="sem-foto" id="previa-sem-foto"><img src="{{ url_for('static', filename='img/logo-360.png') }}" alt="">Ver post no Instagram</span>
+                  <img id="previa-foto" class="oculto" src="" alt="">
+                  <span class="formato"><span class="icone" id="previa-formato-icone">movie</span> <span id="previa-formato">Reels</span></span>
+                </span>
+                <div class="post-texto">
+                  <div class="post-meta"><strong id="previa-tema">{{ FILTROS.values()|first }}</strong><span>Hoje</span></div>
+                  <p id="previa-legenda" style="color:var(--texto-3)">A legenda aparece aqui.</p>
+                  <div class="post-tags" id="previa-tags"></div>
+                </div>
+              </article>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <!-- HISTÓRICO -->
+      <section class="bloco" id="historico">
+        <div class="bloco-topo">
+          <h2><span class="icone">history</span> Histórico de posts</h2>
+          <p>Todos os posts que já foram adicionados, com a data em que entraram no site. "Tirar do site" esconde o post, mas ele continua aqui.</p>
+        </div>
+        <div class="bloco-corpo">
+          <div class="historico-filtros">
+            <div class="entrada">
+              <span class="icone">search</span>
+              <input type="search" id="busca" placeholder="Buscar por tema, legenda ou link" aria-label="Buscar no histórico">
+            </div>
+            <select id="filtro-tipo" aria-label="Filtrar por tipo">
+              <option value="">Todos os tipos</option>
+              {% for chave, nome in FILTROS.items() %}<option value="{{ chave }}">{{ nome }}</option>{% endfor %}
+            </select>
+            <select id="filtro-estado" aria-label="Filtrar por situação">
+              <option value="">No site e removidos</option>
+              <option value="ativo">Só no site</option>
+              <option value="removido">Só removidos</option>
+            </select>
+          </div>
+
+          {% if posts %}
+          <table class="tabela" id="tabela-historico">
+            <thead>
+              <tr><th>Post</th><th>Tipo</th><th>Adicionado em</th><th>Situação</th><th><span class="so-leitor">Ações</span></th></tr>
+            </thead>
+            <tbody>
+              {% for post in posts %}
+              {% set foto = foto_post(post) %}
+              <tr class="{{ 'removido' if not post.ativo }}" data-tipo="{{ post.filtro }}" data-estado="{{ 'ativo' if post.ativo else 'removido' }}"
+                  data-busca="{{ (post.tema ~ ' ' ~ post.legenda ~ ' ' ~ post.link ~ ' ' ~ post.hashtags)|lower }}">
+                <td>
+                  <div class="post-linha">
+                    {% if foto %}<img class="miniatura" src="{{ foto }}" alt="" loading="lazy">
+                    {% else %}<span class="miniatura"><span class="icone">image</span></span>{% endif %}
+                    <div style="min-width:0">
+                      <strong>{{ post.tema or 'Sem tema' }}</strong>
+                      <small>{{ post.legenda or post.link }}</small>
+                    </div>
+                  </div>
+                </td>
+                <td data-rotulo="Tipo">{{ FILTROS.get(post.filtro, post.filtro) }}<br><small style="color:var(--texto-3)">{{ FORMATOS.get(post.formato, {}).get('nome', '') }}</small></td>
+                <td data-rotulo="Adicionado em" class="data-linha">
+                  {{ post.inserido_em|data_br }}
+                  {% if not post.ativo and post.removido_em %}<small>Removido em {{ post.removido_em|data_br }}</small>{% endif %}
+                  {% if post.exemplo %}<small>Post de exemplo do protótipo</small>{% endif %}
+                </td>
+                <td data-rotulo="Situação">
+                  <span class="estado {{ 'estado-ativo' if post.ativo else 'estado-removido' }}">{{ 'No site' if post.ativo else 'Removido' }}</span>
+                </td>
+                <td class="acoes-linha">
+                  <a class="acao" href="{{ post.link }}" target="_blank" rel="noopener"><span class="icone" style="font-size:18px">open_in_new</span> Abrir</a>
+                  <form method="post" action="{{ url_for('visibilidade_post', post_id=post.id, acao='remover' if post.ativo else 'restaurar') }}"
+                        {% if post.ativo %}onsubmit="return confirm('Tirar este post do site? Ele continua no histórico.');"{% endif %}>
+                    <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+                    {% if post.ativo %}
+                    <button class="acao perigo" type="submit"><span class="icone" style="font-size:18px">visibility_off</span> Tirar do site</button>
+                    {% else %}
+                    <button class="acao" type="submit"><span class="icone" style="font-size:18px">undo</span> Voltar ao site</button>
+                    {% endif %}
+                  </form>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          <p class="vazio oculto" id="historico-vazio">Nenhum post encontrado com esses filtros.</p>
+          {% else %}
+          <p class="vazio">Nenhum post cadastrado ainda.</p>
+          {% endif %}
+        </div>
+      </section>
+
+      <!-- FOTOS DOS PROJETOS -->
+      <section class="bloco" id="projetos">
+        <div class="bloco-topo">
+          <h2><span class="icone">photo_library</span> Fotos dos projetos</h2>
+          <p>A primeira foto de cada projeto aparece no cartão da página inicial. Todas aparecem quando clicam em "Saiba mais". Use as setas para escolher a ordem.</p>
+        </div>
+        <div class="bloco-corpo lista-projetos-admin">
+          {% for p in projetos %}
+          {% set fotos = fotos_projetos.get(p.id, []) %}
+          <div class="projeto-admin" id="projeto-{{ p.id }}">
+            <h3>{{ p.nome }} <small>{{ fotos|length }} foto(s)</small></h3>
+            <div class="miniaturas">
+              {% for f in fotos %}
+              <figure class="mini-foto">
+                <img src="{{ url_for('static', filename=f) }}" alt="Foto {{ loop.index }} de {{ p.nome }}" loading="lazy">
+                {% if loop.first %}<span class="capa">Capa</span>{% endif %}
+                <figcaption>
+                  <form method="post" action="{{ url_for('mexer_foto_projeto', projeto_id=p.id, posicao=loop.index0, acao='antes') }}">
+                    <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+                    <button class="acao" type="submit" title="Mover para antes" aria-label="Mover para antes" {{ 'disabled' if loop.first }}><span class="icone">arrow_back</span></button>
+                  </form>
+                  <form method="post" action="{{ url_for('mexer_foto_projeto', projeto_id=p.id, posicao=loop.index0, acao='depois') }}">
+                    <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+                    <button class="acao" type="submit" title="Mover para depois" aria-label="Mover para depois" {{ 'disabled' if loop.last }}><span class="icone">arrow_forward</span></button>
+                  </form>
+                  <form method="post" action="{{ url_for('mexer_foto_projeto', projeto_id=p.id, posicao=loop.index0, acao='remover') }}" onsubmit="return confirm('Tirar esta foto do projeto?');">
+                    <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+                    <button class="acao perigo" type="submit" title="Tirar foto" aria-label="Tirar foto"><span class="icone">delete</span></button>
+                  </form>
+                </figcaption>
+              </figure>
+              {% else %}
+              <p class="sem-fotos">Sem fotos. No site aparece "Em breve".</p>
+              {% endfor %}
+            </div>
+            <form class="enviar-fotos" method="post" action="{{ url_for('adicionar_fotos_projeto', projeto_id=p.id) }}" enctype="multipart/form-data">
+              <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+              <label class="botao botao-cinza botao-pequeno escolher-arquivo">
+                <span class="icone">upload</span> <span data-texto-arquivo>Escolher fotos</span>
+                <input type="file" name="fotos" accept="image/jpeg,image/png,image/webp" multiple required>
+              </label>
+              <button class="botao botao-azul botao-pequeno" type="submit"><span class="icone">add</span> Adicionar</button>
+            </form>
+          </div>
+          {% endfor %}
+        </div>
+      </section>
+
+      <!-- GALERIA -->
+      <section class="bloco" id="galeria">
+        <div class="bloco-topo">
+          <h2><span class="icone">collections</span> Galeria da página inicial</h2>
+          <p>As fotos aparecem na galeria "Nosso Dia a Dia", nesta mesma ordem. O filtro escolhe em qual aba a foto aparece.</p>
+        </div>
+        <div class="bloco-corpo">
+          <form class="nova-galeria" method="post" action="{{ url_for('adicionar_galeria') }}" enctype="multipart/form-data">
+            <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+            <h3>Adicionar foto</h3>
+            <div class="duas-colunas">
+              <div class="campo">
+                <span class="rotulo">Foto *</span>
+                <label class="botao botao-cinza botao-pequeno escolher-arquivo">
+                  <span class="icone">upload</span> <span data-texto-arquivo>Escolher foto</span>
+                  <input type="file" name="foto" accept="image/jpeg,image/png,image/webp" required>
+                </label>
+              </div>
+              <div class="campo">
+                <label for="g-tipo">Filtro *</label>
+                <select id="g-tipo" name="tipo" required>
+                  {% for chave, nome in GALERIA_TIPOS.items() %}<option value="{{ chave }}">{{ nome }}</option>{% endfor %}
+                </select>
+              </div>
+              <div class="campo">
+                <label for="g-titulo">Título</label>
+                <input type="text" id="g-titulo" name="titulo" maxlength="80" placeholder="Ex.: Projeto Show de Bola">
+              </div>
+              <div class="campo">
+                <label for="g-texto">Descrição (opcional)</label>
+                <input type="text" id="g-texto" name="texto" maxlength="300" placeholder="Aparece quando abrem a foto">
+              </div>
+            </div>
+            <div><button class="botao botao-azul" type="submit"><span class="icone">add</span> Adicionar à galeria</button></div>
+          </form>
+
+          {% if galeria %}
+          <ul class="lista-equipe lista-galeria">
+            {% for g in galeria %}
+            <li>
+              <div class="post-linha">
+                <img class="miniatura" src="{{ url_for('static', filename=g.foto) }}" alt="" loading="lazy">
+                <div style="min-width:0">
+                  <strong>{{ g.titulo or 'Sem título' }}</strong>
+                  <small>{{ GALERIA_TIPOS.get(g.tipo, g.tipo) }}{% if g.texto %} • {{ g.texto }}{% endif %}</small>
+                </div>
+              </div>
+              <div class="acoes-linha">
+                <form method="post" action="{{ url_for('mover_galeria', item_id=g.id, direcao='cima') }}">
+                  <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+                  <button class="acao" type="submit" title="Subir" aria-label="Subir" {{ 'disabled' if loop.first }}><span class="icone">arrow_upward</span></button>
+                </form>
+                <form method="post" action="{{ url_for('mover_galeria', item_id=g.id, direcao='baixo') }}">
+                  <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+                  <button class="acao" type="submit" title="Descer" aria-label="Descer" {{ 'disabled' if loop.last }}><span class="icone">arrow_downward</span></button>
+                </form>
+                <button class="acao" type="button" data-editar="editar-{{ g.id }}"><span class="icone" style="font-size:18px">edit</span> Editar</button>
+                <form method="post" action="{{ url_for('excluir_galeria', item_id=g.id) }}" onsubmit="return confirm('Tirar esta foto da galeria?');">
+                  <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+                  <button class="acao perigo" type="submit"><span class="icone" style="font-size:18px">delete</span> Excluir</button>
+                </form>
+              </div>
+              {# Formulário de edição, aparece ao clicar em "Editar" #}
+              <form class="editar-galeria oculto" id="editar-{{ g.id }}" method="post" action="{{ url_for('editar_galeria', item_id=g.id) }}" enctype="multipart/form-data">
+                <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+                <div class="duas-colunas">
+                  <div class="campo">
+                    <label>Filtro</label>
+                    <select name="tipo">
+                      {% for chave, nome in GALERIA_TIPOS.items() %}<option value="{{ chave }}" {{ 'selected' if g.tipo == chave }}>{{ nome }}</option>{% endfor %}
+                    </select>
+                  </div>
+                  <div class="campo">
+                    <span class="rotulo">Trocar foto (opcional)</span>
+                    <label class="botao botao-cinza botao-pequeno escolher-arquivo">
+                      <span class="icone">upload</span> <span data-texto-arquivo>Escolher foto</span>
+                      <input type="file" name="foto" accept="image/jpeg,image/png,image/webp">
+                    </label>
+                  </div>
+                  <div class="campo"><label>Título</label><input type="text" name="titulo" maxlength="80" value="{{ g.titulo }}"></div>
+                  <div class="campo"><label>Descrição</label><input type="text" name="texto" maxlength="300" value="{{ g.texto }}"></div>
+                </div>
+                <div class="botoes-form">
+                  <button class="botao botao-azul botao-pequeno" type="submit"><span class="icone">save</span> Salvar</button>
+                  <button class="botao botao-cinza botao-pequeno" type="button" data-editar="editar-{{ g.id }}">Cancelar</button>
+                </div>
+              </form>
+            </li>
+            {% endfor %}
+          </ul>
+          {% else %}
+          <p class="vazio">Nenhuma foto na galeria. No site aparece "Fotos em breve!".</p>
+          {% endif %}
+        </div>
+      </section>
+
+      <!-- FAMÍLIA AEPEC -->
+      <section class="bloco" id="familia">
+        <div class="bloco-topo">
+          <h2><span class="icone">diversity_3</span> Família AEPEC</h2>
+          <a class="botao botao-azul botao-pequeno" href="{{ url_for('editar_membro') }}"><span class="icone">person_add</span> Adicionar pessoa</a>
+          <p>As pessoas aparecem na página <a class="link-seta" href="{{ url_for('familia') }}">Família AEPEC</a> nesta mesma ordem. Use as setas para mudar a ordem.</p>
+        </div>
+        <div class="bloco-corpo">
+          {% if equipe %}
+          <ul class="lista-equipe">
+            {% for m in equipe %}
+            <li>
+              <div class="post-linha">
+                {% if m.fotos %}<img class="miniatura redonda" src="{{ url_for('static', filename=m.fotos[0]) }}" alt="" loading="lazy">
+                {% else %}<span class="miniatura redonda"><span class="icone">person</span></span>{% endif %}
+                <div style="min-width:0">
+                  <strong>{{ m.nome }}</strong>
+                  <small>{{ m.cargo }}{% if m.area %} • {{ m.area }}{% endif %}</small>
+                </div>
+              </div>
+              <div class="acoes-linha">
+                <form method="post" action="{{ url_for('mover_membro', membro_id=m.id, direcao='cima') }}">
+                  <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+                  <button class="acao" type="submit" title="Subir" aria-label="Subir {{ m.nome }}" {{ 'disabled' if loop.first }}><span class="icone">arrow_upward</span></button>
+                </form>
+                <form method="post" action="{{ url_for('mover_membro', membro_id=m.id, direcao='baixo') }}">
+                  <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+                  <button class="acao" type="submit" title="Descer" aria-label="Descer {{ m.nome }}" {{ 'disabled' if loop.last }}><span class="icone">arrow_downward</span></button>
+                </form>
+                <a class="acao" href="{{ url_for('editar_membro', membro_id=m.id) }}"><span class="icone" style="font-size:18px">edit</span> Editar</a>
+                <form method="post" action="{{ url_for('excluir_membro', membro_id=m.id) }}" onsubmit="return confirm('Excluir {{ m.nome|replace("'", "")|replace('"', '') }} da Família AEPEC? Isso não pode ser desfeito.');">
+                  <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+                  <button class="acao perigo" type="submit"><span class="icone" style="font-size:18px">delete</span> Excluir</button>
+                </form>
+              </div>
+            </li>
+            {% endfor %}
+          </ul>
+          {% else %}
+          <p class="vazio">Ninguém cadastrado ainda. Clique em "Adicionar pessoa".</p>
+          {% endif %}
+        </div>
+      </section>
+
+      <!-- SENHA -->
+      <section class="bloco" id="seguranca">
+        <div class="bloco-topo">
+          <h2><span class="icone">key</span> Senha de acesso</h2>
+          <p>E-mail de acesso: <strong>{{ admin.email }}</strong>.
+            {% if admin.senha_alterada_em %}Senha alterada pela última vez em {{ admin.senha_alterada_em|data_br }}.
+            {% else %}<strong style="color:var(--erro)">A senha ainda é a padrão. Troque antes de colocar o site no ar.</strong>{% endif %}</p>
+        </div>
+        <div class="bloco-corpo">
+          <form class="form-senha" method="post" action="{{ url_for('mudar_senha') }}" id="form-senha">
+            <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+            <input type="email" name="usuario" value="{{ admin.email }}" autocomplete="username" hidden>
+            {% for id, rotulo, auto in [("atual", "Senha atual", "current-password"), ("nova", "Nova senha", "new-password"), ("confirmar", "Repita a nova senha", "new-password")] %}
+            <div class="campo">
+              <label for="{{ id }}">{{ rotulo }}</label>
+              <div class="entrada">
+                <span class="icone">lock</span>
+                <input class="com-olho" type="password" id="{{ id }}" name="{{ id }}" required autocomplete="{{ auto }}" {{ 'minlength=8' if id != 'atual' }}>
+                <button class="ver-senha" type="button" data-ver-senha="{{ id }}" aria-label="Mostrar senha"><span class="icone">visibility</span></button>
+              </div>
+              {% if id == 'nova' %}
+              <div class="forca" aria-hidden="true"><i id="forca-barra"></i></div>
+              <small class="dica" id="forca-texto">Use pelo menos 8 caracteres. Misture letras, números e símbolos.</small>
+              {% endif %}
+              {% if id == 'confirmar' %}<small class="dica" id="confere-texto"></small>{% endif %}
+            </div>
+            {% endfor %}
+            <div><button class="botao botao-azul" type="submit"><span class="icone">save</span> Salvar nova senha</button></div>
+          </form>
+        </div>
+      </section>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  // Passa os nomes dos filtros e formatos para o script do painel
+  window.FILTROS = {{ FILTROS|tojson }};
+  window.FORMATOS = {{ FORMATOS|tojson }};
+</script>
+<script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+{% endblock %}
