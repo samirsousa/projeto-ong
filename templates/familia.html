@@ -23,7 +23,7 @@
     <div class="mosaico" aria-label="Fotos da equipe">
       {% for m in equipe %}
         {% for foto in m.fotos %}
-        <a class="mosaico-foto" href="#pessoa-{{ m.id }}" title="{{ m.nome }}" data-revelar style="--atraso: {{ conta.n * 60 }}ms">{% set conta.n = conta.n + 1 %}
+        <a class="mosaico-foto" href="#pessoa-{{ m.id }}" title="{{ m.nome }}" data-revelar data-atraso="{{ conta.n * 60 }}"></a>{% set conta.n = conta.n + 1 %}
           <img src="{{ url_for('static', filename=foto) }}" alt="{{ m.nome }}" loading="lazy">
         </a>
         {% endfor %}
@@ -39,7 +39,7 @@
     {% if equipe %}
     <div class="equipe">
       {% for m in equipe %}
-      <article class="pessoa" id="pessoa-{{ m.id }}" data-revelar style="--atraso: {{ (loop.index0 % 2) * 120 }}ms">
+      <article class="pessoa" id="pessoa-{{ m.id }}" data-revelar data-atraso="{{ (loop.index0 % 2) * 120 }}"></article>
         <header class="pessoa-topo">
           <div class="pessoa-fotos {{ 'dupla' if m.fotos|length > 1 }}">
             {% for foto in m.fotos %}

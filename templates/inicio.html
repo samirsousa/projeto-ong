@@ -72,7 +72,7 @@
         <div class="cartao-foto">
           {# Primeira foto do projeto. Sem foto, mostra "Em breve". #}
           <img src="{{ url_for('static', filename=fotos[0]) if fotos else url_for('static', filename='img/em-breve.svg') }}" alt="{{ p.nome }}" loading="lazy">
-          <span class="selo" style="background:{{ p.cor }}">{{ p.selo }}</span>
+          <span class="selo" data-cor="{{ p.cor }}">{{ p.selo }}</span>
         </div>
         <div class="cartao-corpo">
           <h3>{{ p.nome }}</h3>

@@ -248,12 +248,24 @@ if ("IntersectionObserver" in window) {
   var observador = new IntersectionObserver(function (entradas) {
     entradas.forEach(function (entrada) {
       if (entrada.isIntersecting) {
-        entrada.target.classList.add("revelado");
-        observador.unobserve(entrada.target);
+        var el = entrada.target;
+        el.classList.add("revelado");
+        observador.unobserve(el);
+        // Tira o atraso
+        setTimeout(function () { el.style.transitionDelay = ""; }, 900 + Number(el.dataset.atraso || 0));
       }
     });
   }, { threshold: 0.12, rootMargin: "0px 0px -40px 0px" });
-  paraRevelar.forEach(function (el) { observador.observe(el); });
+  paraRevelar.forEach(function (el) {
+    // Pequeno atraso para os cartões aparecerem um depois do outro
+    if (el.dataset.atraso) el.style.transitionDelay = el.dataset.atraso + "ms";
+    observador.observe(el);
+  });
 } else {
   paraRevelar.forEach(function (el) { el.classList.add("revelado"); });
 }
+
+// ---------- Cor do selo de cada projeto (vem do projetos.py) ----------
+document.querySelectorAll("[data-cor]").forEach(function (el) {
+  el.style.background = el.dataset.cor;
+});

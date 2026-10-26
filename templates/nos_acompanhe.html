@@ -40,7 +40,7 @@
       </div>
       {# Os números do perfil só aparecem se estiverem preenchidos no config_site.py #}
       {% if site.instagram_seguidores or site.instagram_publicacoes %}
-      <div class="contadores" style="grid-template-columns:repeat({{ 2 if site.instagram_seguidores and site.instagram_publicacoes else 1 }}, 1fr)">
+      <div class="contadores {{ 'dois' if site.instagram_seguidores and site.instagram_publicacoes else 'um' }}"></div>
         {% if site.instagram_seguidores %}<div><strong class="amarelo">{{ site.instagram_seguidores }}</strong><span>Seguidores</span></div>{% endif %}
         {% if site.instagram_publicacoes %}<div><strong>{{ site.instagram_publicacoes }}</strong><span>Publicações</span></div>{% endif %}
       </div>
