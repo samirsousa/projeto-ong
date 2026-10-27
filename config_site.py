@@ -20,10 +20,3 @@ SITE = {
     "video_duracao": "5 minutos",
     "video_youtube": "",
 }
-
-# Fotos do site.
-# As fotos dos projetos, da galeria e da equipe são trocadas pelo painel do administrador.
-# Aqui fica só o fundo do bloco do vídeo na página inicial
-IMAGENS = {
-    "video-capa": "Início: fundo do bloco do vídeo (sem foto fica só o fundo escuro)",
-}

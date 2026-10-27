@@ -228,8 +228,6 @@ main { padding-top: 76px; }
 .hero-grade { position: relative; display: grid; gap: 48px; align-items: center; }
 @media (min-width: 1024px) { .hero-grade { grid-template-columns: 7fr 5fr; } }
 .hero-texto { display: flex; flex-direction: column; gap: 18px; }
-.hero-selo { background: rgba(254, 166, 25, .18); color: var(--amarelo-texto); }
-[data-tema="escuro"] .hero-selo { color: #fcd34d; }
 .pulso { width: 8px; height: 8px; border-radius: 50%; background: var(--amarelo); position: relative; }
 .pulso::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: inherit; animation: pulsar 1.6s infinite; }
 @keyframes pulsar { 0% { transform: scale(1); opacity: .8; } 100% { transform: scale(2.6); opacity: 0; } }

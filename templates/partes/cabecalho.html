@@ -23,9 +23,6 @@
       <a class="botao botao-amarelo botao-pequeno so-desktop" href="{{ raiz }}#como-ajudar">
         <span class="icone">volunteer_activism</span> Fazer Doação
       </a>
-      <a class="botao-admin so-desktop" href="{{ url_for('painel') if logado else url_for('login') }}" title="Área restrita para administradores">
-        <span class="icone" style="font-size:18px">lock</span> Admin
-      </a>
       <button class="botao-icone" type="button" data-trocar-tema>
         <span class="icone tema-lua">dark_mode</span><span class="icone tema-sol">light_mode</span>
       </button>
@@ -48,7 +45,6 @@
     <a class="item" href="{{ raiz }}#numeros"><span class="icone">bar_chart</span> Nossos Números</a>
     <div class="botoes">
       <a class="botao botao-amarelo" href="{{ raiz }}#como-ajudar"><span class="icone">volunteer_activism</span> Fazer Doação / Como Ajudar</a>
-      <a class="botao botao-cinza" href="{{ url_for('painel') if logado else url_for('login') }}"><span class="icone">lock</span> Área do Administrador</a>
     </div>
   </nav>
 </div>

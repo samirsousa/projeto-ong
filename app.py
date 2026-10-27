@@ -8,8 +8,12 @@ import uuid
 from datetime import date, datetime
 from functools import wraps
 
+import click
 from flask import (Flask, abort, flash, redirect, render_template, request,
                    session, url_for)
+from markupsafe import Markup, escape
+from PIL import Image, ImageOps, UnidentifiedImageError
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 import dados
 from config_site import SITE
@@ -23,6 +27,8 @@ app = Flask(__name__)
 app.config["MAX_CONTENT_LENGTH"] = 8 * 1024 * 1024  # limite de 8 MB por envio
 app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
 app.config["SESSION_COOKIE_SECURE"] = os.environ.get("AEPEC_HTTPS") == "1"
+if os.environ.get("AEPEC_PROXY") == "1":
+    app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1)
 
 
 def _chave_secreta():
@@ -53,19 +59,8 @@ def foto_local(nome):
     return ""
 
 
-def imagem(nome):
-    """Usa a foto se existir. Se não, mostra a imagem "Em breve"."""
-    return foto_local(nome) or url_for("static", filename="img/em-breve.svg")
-
-
-
 def foto_post(post):
-    img = post.get("imagem") or ""
-    if img.startswith("site:"):
-        return imagem(img[5:])
-    if img:
-        return url_for("static", filename=img)
-    return ""
+    return url_for("static", filename=post["imagem"]) if post.get("imagem") else ""
 
 
 def tempo_relativo(iso):
@@ -106,7 +101,6 @@ def csrf_token():
 def variaveis_das_paginas():
     return {
         "site": SITE,
-        "imagem": imagem,
         "foto_local": foto_local,
         "foto_post": foto_post,
         "csrf_token": csrf_token,
@@ -120,8 +114,6 @@ def variaveis_das_paginas():
 
 def paragrafos(texto):
     """Linha em branco vira parágrafo novo. Enter simples vira quebra de linha."""
-    from markupsafe import Markup, escape
-
     blocos = [b.strip() for b in (texto or "").replace("\r\n", "\n").split("\n\n") if b.strip()]
     return Markup("".join(f"<p>{escape(b)}</p>".replace("\n", "<br>") for b in blocos))
 
@@ -137,6 +129,13 @@ def conferir_csrf():
         if not session.get("csrf") or request.form.get("csrf") != session.get("csrf"):
             abort(400)
 
+@app.after_request
+def cabecalhos_de_seguranca(resposta):
+    # Impede que outro site abra o nosso dentro de uma moldura (golpe de clique falso)
+    resposta.headers["X-Frame-Options"] = "DENY"
+    resposta.headers["X-Content-Type-Options"] = "nosniff"
+    resposta.headers["Referrer-Policy"] = "same-origin"
+    return resposta
 
 def precisa_login(funcao):
     @wraps(funcao)
@@ -168,10 +167,10 @@ def familia():
 
 # ---------- Login do administrador ----------
 
-# Guarda tentativas erradas por endereço, para dificultar quem tenta adivinhar a senha
-_tentativas = {}
-MAX_TENTATIVAS = 5
-ESPERA_SEGUNDOS = 5 * 60
+# Proteção contra brute force e adivinhos
+JANELA_SEGUNDOS = 15 * 60  # tempo em que as tentativas erradas são contadas
+MAX_ERROS_POR_IP = 5       # erros de um mesmo endereço antes de bloquear
+MAX_ERROS_GERAL = 30       # erros somando todos os endereços (ataque vindo de vários lugares)
 
 
 @app.route("/admin/login", methods=["GET", "POST"])
@@ -181,21 +180,23 @@ def login():
 
     erro = None
     ip = request.remote_addr or "?"
-    if request.method == "POST":
-        erros, desde = _tentativas.get(ip, (0, 0))
-        if erros >= MAX_TENTATIVAS and time.time() - desde < ESPERA_SEGUNDOS:
-            erro = "Muitas tentativas erradas. Aguarde 5 minutos e tente de novo."
+    if not dados.dados_admin():
+        erro = "Nenhum administrador cadastrado. Rode no terminal: flask --app app criar-admin"
+    elif request.method == "POST":
+        bloqueado = (dados.contar_erros_login(JANELA_SEGUNDOS, ip) >= MAX_ERROS_POR_IP
+                     or dados.contar_erros_login(JANELA_SEGUNDOS) >= MAX_ERROS_GERAL)
+        if bloqueado:
+            erro = "Muitas tentativas erradas. Aguarde 15 minutos e tente de novo."
         elif dados.conferir_login(request.form.get("email", ""), request.form.get("senha", "")):
-            _tentativas.pop(ip, None)
+            dados.limpar_erros_login(ip)
             session.clear()
             session["admin"] = True
             # "Manter conectado" deixa o login salvo por 31 dias.
             session.permanent = bool(request.form.get("lembrar"))
             return redirect(url_for("painel"))
         else:
-            if time.time() - desde >= ESPERA_SEGUNDOS:
-                erros = 0
-            _tentativas[ip] = (erros + 1, time.time())
+            dados.registrar_erro_login(ip)
+            time.sleep(1)  # cada tentativa errada demora, o que deixa o ataque bem mais lento
             erro = "E-mail ou senha incorretos."
     return render_template("login.html", erro=erro, pagina="login")
 
@@ -244,8 +245,6 @@ def arrumar_link(link):
 def salvar_foto(arquivo, quadrada=False):
     """Salva a foto enviada, já reduzida para não pesar no site.
     quadrada=True corta no meio em formato quadrado (fotos da equipe)."""
-    from PIL import Image, ImageOps, UnidentifiedImageError
-
     try:
         foto = Image.open(arquivo.stream)
         foto.load()
@@ -309,7 +308,7 @@ def novo_post():
     return redirect(url_for("painel") + "#historico")
 
 
-@app.route("/admin/posts/<post_id>/<acao>", methods=["POST"])
+@app.route("/admin/posts/<int:post_id>/<acao>", methods=["POST"])
 @precisa_login
 def visibilidade_post(post_id, acao):
     if acao not in ("remover", "restaurar"):
@@ -347,7 +346,7 @@ def apagar_arquivo_foto(caminho):
 
 
 @app.route("/admin/equipe/nova", methods=["GET", "POST"])
-@app.route("/admin/equipe/<membro_id>", methods=["GET", "POST"])
+@app.route("/admin/equipe/<int:membro_id>", methods=["GET", "POST"])
 @precisa_login
 def editar_membro(membro_id=None):
     membro = dados.pegar_membro(membro_id) if membro_id else None
@@ -397,7 +396,7 @@ def editar_membro(membro_id=None):
     return render_template("admin_membro.html", membro=membro, form=None, pagina="admin")
 
 
-@app.route("/admin/equipe/<membro_id>/excluir", methods=["POST"])
+@app.route("/admin/equipe/<int:membro_id>/excluir", methods=["POST"])
 @precisa_login
 def excluir_membro(membro_id):
     membro = dados.pegar_membro(membro_id)
@@ -408,7 +407,7 @@ def excluir_membro(membro_id):
     return redirect(url_for("painel") + "#familia")
 
 
-@app.route("/admin/equipe/<membro_id>/mover/<direcao>", methods=["POST"])
+@app.route("/admin/equipe/<int:membro_id>/mover/<direcao>", methods=["POST"])
 @precisa_login
 def mover_membro(membro_id, direcao):
     if direcao not in ("cima", "baixo"):
@@ -484,7 +483,7 @@ def adicionar_galeria():
     return redirect(url_for("painel") + "#galeria")
 
 
-@app.route("/admin/galeria/<item_id>", methods=["POST"])
+@app.route("/admin/galeria/<int:item_id>", methods=["POST"])
 @precisa_login
 def editar_galeria(item_id):
     campos = _campos_galeria(request.form)
@@ -503,7 +502,7 @@ def editar_galeria(item_id):
     return redirect(url_for("painel") + "#galeria")
 
 
-@app.route("/admin/galeria/<item_id>/excluir", methods=["POST"])
+@app.route("/admin/galeria/<int:item_id>/excluir", methods=["POST"])
 @precisa_login
 def excluir_galeria(item_id):
     apagar_arquivo_foto(dados.apagar_galeria(item_id))
@@ -511,7 +510,7 @@ def excluir_galeria(item_id):
     return redirect(url_for("painel") + "#galeria")
 
 
-@app.route("/admin/galeria/<item_id>/mover/<direcao>", methods=["POST"])
+@app.route("/admin/galeria/<int:item_id>/mover/<direcao>", methods=["POST"])
 @precisa_login
 def mover_galeria(item_id, direcao):
     if direcao not in ("cima", "baixo"):
@@ -535,15 +534,20 @@ def pedido_invalido(e):
 @app.errorhandler(413)
 def arquivo_grande(e):
     flash("A imagem é muito grande. O limite é 8 MB.", "erro")
-    return redirect(url_for("painel") + "#novo-post")
+    return redirect(request.referrer or url_for("painel"))
 
 
-# ---------- Comando para recuperar o acesso ----------
+# ---------- Comando para criar o administrador ----------
 
-@app.cli.command("resetar-senha")
-def comando_resetar_senha():
-    dados.resetar_admin()
-    print(f"Acesso voltou ao padrão: {dados.EMAIL_PADRAO} / {dados.SENHA_PADRAO}")
+@app.cli.command("criar-admin")
+@click.option("--email", prompt="E-mail do administrador")
+@click.password_option("--senha", prompt="Senha (mínimo 8 caracteres)", confirmation_prompt="Repita a senha")
+def comando_criar_admin(email, senha):
+    """Cria o administrador ou troca o e-mail e a senha dele"""
+    if len(senha) < 8:
+        raise click.BadParameter("a senha precisa ter pelo menos 8 caracteres", param_hint="--senha")
+    dados.definir_admin(email, senha)
+    click.echo(f"Administrador salvo: {email.strip().lower()}")
 
 
 if __name__ == "__main__":

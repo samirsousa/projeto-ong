@@ -5,8 +5,6 @@
 
 {% block conteudo %}
 <section class="login-fundo">
-  <div class="bolha bolha-1"></div>
-  <div class="bolha bolha-2"></div>
   <div class="container">
     <div class="login-aviso">
       <b>!</b>
@@ -40,16 +38,16 @@
           {% endfor %}
           <div class="alerta alerta-info oculto" id="aviso-senha" role="status">
             <span class="icone">info</span>
-            <span>Esqueceu a senha? Peça para quem cuida do site rodar o comando de recuperação (está explicado no LEIAME).</span>
+            <span>Esqueceu a senha? Peça para quem cuida do site rodar o comando de recuperação.</span>
           </div>
 
           <form method="post" action="{{ url_for('login') }}" style="display:flex;flex-direction:column;gap:16px">
             <input type="hidden" name="csrf" value="{{ csrf_token() }}">
             <div class="campo">
-              <div class="campo-topo"><label for="email">E-mail</label><span class="dica">Ex.: admin@aepec.org.br</span></div>
+              <div class="campo-topo"><label for="email">E-mail</label></div>
               <div class="entrada">
                 <span class="icone">mail</span>
-                <input type="email" id="email" name="email" required autocomplete="username" placeholder="admin@aepec.org.br" value="{{ request.form.email or '' }}">
+                <input type="email" id="email" name="email" required autocomplete="username" placeholder="Email" value="{{ request.form.email or '' }}">
               </div>
             </div>
             <div class="campo">
