@@ -1,7 +1,7 @@
-# Equipe que aparece quando o site roda.
-# Textos copiados do site original da AEPEC.
-# A equipe é editada pelo painel do administrador.
-# Parágrafos são separados por uma linha em branco.
+# Equipe que entra no banco na primeira vez que o site roda
+# Os textos são os do site original da AEPEC
+# Depois disso a equipe é editada pelo painel do administrador
+# Parágrafos são separados por uma linha em branco
 
 EQUIPE_INICIAL = [
     {

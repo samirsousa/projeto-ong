@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block titulo %}Login Administrativo - AEPEC{% endblock %}
+{% block titulo %}Entrar no painel - AEPEC{% endblock %}
 {% block cabeca %}<meta name="robots" content="noindex">{% endblock %}
 
 {% block conteudo %}
@@ -8,17 +8,17 @@
   <div class="container">
     <div class="login-aviso">
       <b>!</b>
-      <span><strong style="color:var(--texto)">Atenção:</strong> visitantes, voluntários e doadores navegam livremente sem precisar de login.</span>
+      <span>Esta página é só para a equipe da AEPEC. Para ver o site não é preciso entrar.</span>
     </div>
 
     <div class="login-caixa">
       <div class="login-lado">
         <div style="display:flex;flex-direction:column;gap:18px">
-          <a class="voltar" href="{{ url_for('inicio') }}"><span class="icone" style="font-size:18px">home</span> Voltar à Página Inicial</a>
+          <a class="voltar" href="{{ url_for('inicio') }}"><span class="icone" style="font-size:18px">home</span> Voltar ao site</a>
           <span class="logo-claro"><img src="{{ url_for('static', filename='img/logo-360.png') }}" alt="Logo Espaço Pequeno Cidadão"></span>
           <div>
-            <h2>Cuidando do Futuro das Nossas Crianças</h2>
-            <p>Área para a equipe da AEPEC atualizar o site, como os posts da página Nos Acompanhe.</p>
+            <h2>Espaço Pequeno Cidadão</h2>
+            <p>Aqui a equipe da AEPEC atualiza os posts do Instagram, as fotos dos projetos, a galeria e a Família AEPEC.</p>
           </div>
         </div>
         <div class="base"><span class="icone" style="font-size:16px;color:#fea619">verified_user</span> Acesso restrito à equipe</div>
@@ -26,9 +26,8 @@
 
       <div class="login-form">
         <div class="interno">
-          <span class="selo selo-restrito"><span class="icone" style="font-size:16px">lock</span> Área Restrita • Apenas Administradores</span>
-          <h1>Painel Administrativo</h1>
-          <p class="intro">Para gerenciar o site, entre com o e-mail e a senha da administração.</p>
+          <h1>Entrar no painel</h1>
+          <p class="intro">Use o e-mail e a senha do administrador.</p>
 
           {% if erro %}
           <div class="alerta alerta-erro" role="alert"><span class="icone">error</span><span>{{ erro }}</span></div>
@@ -62,8 +61,8 @@
               </div>
             </div>
             <label class="lembrar"><input type="checkbox" name="lembrar" value="1"> Manter conectado neste dispositivo</label>
-            <button class="botao botao-amarelo botao-largo" type="submit" style="padding:14px"><span class="icone">login</span> Acessar Painel</button>
-            <a class="botao botao-cinza botao-largo" href="{{ url_for('inicio') }}" style="background:transparent">Voltar à Página Inicial</a>
+            <button class="botao botao-amarelo botao-largo" type="submit" style="padding:14px"><span class="icone">login</span> Entrar</button>
+            <a class="botao botao-cinza botao-largo" href="{{ url_for('inicio') }}" style="background:transparent">Voltar ao site</a>
           </form>
         </div>
       </div>

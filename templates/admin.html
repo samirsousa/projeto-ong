@@ -23,7 +23,7 @@
       <a href="#familia"><span class="icone">diversity_3</span> Família AEPEC</a>
       <a href="#seguranca"><span class="icone">key</span> Senha de acesso</a>
       <hr>
-      <a href="{{ url_for('nos_acompanhe') }}"><span class="icone">photo_camera</span> Ver Nos Acompanhe</a>
+      <a href="{{ url_for('nos_acompanhe') }}"><span class="icone">photo_camera</span> Ver Nos acompanhe</a>
       <a href="{{ url_for('inicio') }}"><span class="icone">home</span> Ver página inicial</a>
       <a href="{{ url_for('familia') }}"><span class="icone">groups</span> Ver Família AEPEC</a>
     </nav>
@@ -41,8 +41,8 @@
       </div>
 
       <div class="painel-titulo">
-        <h1>Olá! O que vamos atualizar hoje?</h1>
-        <p>Os posts cadastrados aqui aparecem na página <a class="link-seta" href="{{ url_for('nos_acompanhe') }}">Nos Acompanhe</a> e os 6 mais novos aparecem também na página inicial.</p>
+        <h1>Painel do administrador</h1>
+        <p>Os posts cadastrados aqui aparecem na página <a class="link-seta" href="{{ url_for('nos_acompanhe') }}">Nos acompanhe</a> e os 6 mais novos aparecem também na página inicial.</p>
       </div>
 
       {% with mensagens = get_flashed_messages(with_categories=true) %}
@@ -63,7 +63,7 @@
       <section class="bloco" id="novo-post">
         <div class="bloco-topo">
           <h2><span class="icone">add_photo_alternate</span> Adicionar post do Instagram</h2>
-          <p>Cole o link do post e escolha o tipo. Os outros campos deixam o cartão igual aos que já estão no site.</p>
+          <p>Cole o link do post e escolha o tipo. Os outros campos são opcionais e preenchem o cartão do post.</p>
         </div>
         <div class="bloco-corpo">
           <form class="form-post" method="post" action="{{ url_for('novo_post') }}" enctype="multipart/form-data" id="form-post">
@@ -97,8 +97,8 @@
               </div>
 
               <div class="campo">
-                <div class="campo-topo"><label for="tema">Tema</label><span class="dica">Aparece em azul no cartão. Ex.: Oficina Literária</span></div>
-                <input type="text" id="tema" name="tema" maxlength="60" placeholder="Ex.: Esporte & Cidadania">
+                <div class="campo-topo"><label for="tema">Tema</label><span class="dica">Aparece em azul no cartão. Ex.: Oficina literária</span></div>
+                <input type="text" id="tema" name="tema" maxlength="60" placeholder="Ex.: Futsal">
               </div>
 
               <div class="campo">
@@ -193,7 +193,6 @@
                 <td data-rotulo="Adicionado em" class="data-linha">
                   {{ post.inserido_em|data_br }}
                   {% if not post.ativo and post.removido_em %}<small>Removido em {{ post.removido_em|data_br }}</small>{% endif %}
-                  {% if post.exemplo %}<small>Post de exemplo do protótipo</small>{% endif %}
                 </td>
                 <td data-rotulo="Situação">
                   <span class="estado {{ 'estado-ativo' if post.ativo else 'estado-removido' }}">{{ 'No site' if post.ativo else 'Removido' }}</span>
@@ -273,7 +272,7 @@
       <section class="bloco" id="galeria">
         <div class="bloco-topo">
           <h2><span class="icone">collections</span> Galeria da página inicial</h2>
-          <p>As fotos aparecem na galeria "Nosso Dia a Dia", nesta mesma ordem. O filtro escolhe em qual aba a foto aparece.</p>
+          <p>As fotos aparecem na galeria "Nosso dia a dia", nesta mesma ordem. O filtro escolhe em qual aba a foto aparece.</p>
         </div>
         <div class="bloco-corpo">
           <form class="nova-galeria" method="post" action="{{ url_for('adicionar_galeria') }}" enctype="multipart/form-data">
@@ -313,7 +312,7 @@
                 <img class="miniatura" src="{{ url_for('static', filename=g.foto) }}" alt="" loading="lazy">
                 <div style="min-width:0">
                   <strong>{{ g.titulo or 'Sem título' }}</strong>
-                  <small>{{ GALERIA_TIPOS.get(g.tipo, g.tipo) }}{% if g.texto %} • {{ g.texto }}{% endif %}</small>
+                  <small>{{ GALERIA_TIPOS.get(g.tipo, g.tipo) }}{% if g.texto %} - {{ g.texto }}{% endif %}</small>
                 </div>
               </div>
               <div class="acoes-linha">
@@ -382,7 +381,7 @@
                 {% else %}<span class="miniatura redonda"><span class="icone">person</span></span>{% endif %}
                 <div style="min-width:0">
                   <strong>{{ m.nome }}</strong>
-                  <small>{{ m.cargo }}{% if m.area %} • {{ m.area }}{% endif %}</small>
+                  <small>{{ m.cargo }}{% if m.area %} - {{ m.area }}{% endif %}</small>
                 </div>
               </div>
               <div class="acoes-linha">
@@ -414,8 +413,7 @@
         <div class="bloco-topo">
           <h2><span class="icone">key</span> Senha de acesso</h2>
           <p>E-mail de acesso: <strong>{{ admin.email }}</strong>.
-            {% if admin.senha_alterada_em %}Senha alterada pela última vez em {{ admin.senha_alterada_em|data_br }}.
-            {% else %}<strong style="color:var(--erro)">A senha ainda é a padrão. Troque antes de colocar o site no ar.</strong>{% endif %}</p>
+            {% if admin.senha_alterada_em %}Senha alterada pela última vez em {{ admin.senha_alterada_em|data_br }}.{% endif %}</p>
         </div>
         <div class="bloco-corpo">
           <form class="form-senha" method="post" action="{{ url_for('mudar_senha') }}" id="form-senha">

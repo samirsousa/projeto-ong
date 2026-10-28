@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% from "partes/post.html" import cartao_post with context %}
 
-{% block titulo %}Nos Acompanhe no Instagram - AEPEC{% endblock %}
+{% block titulo %}Nos acompanhe no Instagram - AEPEC{% endblock %}
 
 {% set perfil = "https://www.instagram.com/" ~ site.instagram_usuario ~ "/" %}
 
@@ -11,7 +11,7 @@
 <section class="ig-hero">
   <div class="container">
     <div class="ig-topo">
-      <span class="selo"><span class="pulso" style="background:#fbbf24"></span> Instagram Oficial</span>
+      <span class="selo"><span class="icone" style="font-size:16px">photo_camera</span> Instagram oficial</span>
       <a href="{{ perfil }}" target="_blank" rel="noopener">instagram.com/{{ site.instagram_usuario }} <span class="icone" style="font-size:15px">open_in_new</span></a>
     </div>
 
@@ -28,7 +28,7 @@
             <p class="bio">Educação, alimentação e esporte para crianças e jovens da comunidade. Acompanhe o dia a dia das nossas turmas e ações!</p>
             <div class="tags">
               <span><span class="icone">location_on</span> {{ site.regiao }}</span>
-              <span><span class="icone">diversity_1</span> Organização Sem Fins Lucrativos</span>
+              <span><span class="icone">diversity_1</span> Organização sem fins lucrativos</span>
             </div>
           </div>
         </div>
@@ -38,7 +38,7 @@
       </div>
       {# Os números do perfil só aparecem se estiverem preenchidos no config_site.py #}
       {% if site.instagram_seguidores or site.instagram_publicacoes %}
-      <div class="contadores {{ 'dois' if site.instagram_seguidores and site.instagram_publicacoes else 'um' }}"></div>
+      <div class="contadores {{ 'dois' if site.instagram_seguidores and site.instagram_publicacoes else 'um' }}">
         {% if site.instagram_seguidores %}<div><strong class="amarelo">{{ site.instagram_seguidores }}</strong><span>Seguidores</span></div>{% endif %}
         {% if site.instagram_publicacoes %}<div><strong>{{ site.instagram_publicacoes }}</strong><span>Publicações</span></div>{% endif %}
       </div>
@@ -52,7 +52,7 @@
 <section class="filtros">
   <div class="container">
     <div class="lista-filtros" data-alvo="lista-posts" role="group" aria-label="Filtrar posts">
-      <button class="filtro ativo" type="button" data-filtro="todos" aria-pressed="true">Todos os Posts <span class="conta">({{ posts|length }})</span></button>
+      <button class="filtro ativo" type="button" data-filtro="todos" aria-pressed="true">Todos os posts <span class="conta">({{ posts|length }})</span></button>
       {% for chave, nome in FILTROS.items() %}
       <button class="filtro" type="button" data-filtro="{{ chave }}" aria-pressed="false">{{ nome }} <span class="conta">({{ posts|selectattr('filtro', 'equalto', chave)|list|length }})</span></button>
       {% endfor %}
@@ -70,7 +70,7 @@
       {% endfor %}
       <div class="vazio vazio-filtro {{ 'oculto' if posts }}">
         <span class="icone">photo_library</span>
-        {% if posts %}Ainda não há posts deste tipo.{% else %}Ainda não há posts por aqui. Volte em breve!{% endif %}
+        Ainda não há posts deste tipo.
       </div>
     </div>
 
@@ -100,13 +100,13 @@
 <section class="mural">
   <div class="container mural-grade">
     <div>
-      <span class="selo"><span class="icone" style="font-size:16px">campaign</span> Faça Parte da Nossa Rede</span>
+      <span class="selo"><span class="icone" style="font-size:16px">campaign</span> Suas fotos</span>
       <h2>Marque <span>@{{ site.instagram_usuario }}</span> nas suas fotos!</h2>
-      <p>Tirou fotos em nossas oficinas, eventos comunitários ou doações? Publique e marque nosso perfil <strong class="amarelo">@{{ site.instagram_usuario }}</strong> para a gente ver e compartilhar esse momento.</p>
+      <p>Tirou fotos nas atividades, nos eventos ou na entrega de doações? Marque <strong class="amarelo">@{{ site.instagram_usuario }}</strong> no post para a gente ver e compartilhar.</p>
     </div>
     <div class="mural-botoes">
       <a class="botao botao-amarelo" href="{{ perfil }}" target="_blank" rel="noopener"><span class="icone">photo_camera</span> Seguir @{{ site.instagram_usuario }}</a>
-      <a class="botao botao-vidro" href="{{ url_for('inicio') }}#como-ajudar"><span class="icone">volunteer_activism</span> Quero ser Voluntário / Doador</a>
+      <a class="botao botao-vidro" href="{{ url_for('inicio') }}#como-ajudar"><span class="icone">volunteer_activism</span> Quero ajudar</a>
     </div>
   </div>
 </section>

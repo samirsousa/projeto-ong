@@ -15,11 +15,11 @@ PASTA = os.path.join(PASTA_APP, "dados")
 ARQ_BANCO = os.path.join(PASTA, "aepec.db")
 ARQ_SCHEMA = os.path.join(PASTA_APP, "schema.sql")
 
-# Filtros da página "Nos acompanhe" -- a chave é o valor salvo, o texto é o que aparece
+# Filtros da página "Nos acompanhe". A chave é o valor salvo e o texto é o que aparece
 FILTROS = {
-    "reels": "Reels & Vídeos",
-    "pedagogico": "Projetos Pedagógicos",
-    "solidario": "Ações Solidárias",
+    "reels": "Reels e vídeos",
+    "pedagogico": "Projetos pedagógicos",
+    "solidario": "Ações solidárias",
 }
 
 # Formatos do post (selo em cima da foto)
@@ -33,7 +33,7 @@ FORMATOS = {
 GALERIA_TIPOS = {
     "edu": "Educação",
     "esporte": "Esporte",
-    "evento": "Eventos & Festas",
+    "evento": "Eventos e festas",
 }
 
 

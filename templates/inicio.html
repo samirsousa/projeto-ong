@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{# Os projetos ficam em projetos.py. As fotos dos projetos e da galeria são escolhidas no painel. #}
+{# Os projetos ficam em projetos.py. As fotos dos projetos e da galeria são escolhidas no painel #}
 
 {% block conteudo %}
 
@@ -8,14 +8,13 @@
 <section class="hero">
   <div class="container hero-grade">
     <div class="hero-texto">
-      <h1>Transformando Esperança em
-        <span class="destaque-amarelo">Oportunidade Real<svg viewBox="0 0 200 8" fill="none" preserveAspectRatio="none" aria-hidden="true"><path d="M1 5.5C45 2.5 155 2.5 199 5.5" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></span>
-        para Nossas Crianças</h1>
+      <h1>Educação e cuidado para as crianças de
+        <span class="destaque-amarelo">São Gonçalo<svg viewBox="0 0 200 8" fill="none" preserveAspectRatio="none" aria-hidden="true"><path d="M1 5.5C45 2.5 155 2.5 199 5.5" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></span></h1>
       <p>A AEPEC (Espaço Pequeno Cidadão) atende mais de 800 crianças e jovens com educação no contraturno, alimentação, esporte e informática.</p>
       <div class="hero-botoes">
-        <a class="botao botao-amarelo" href="#como-ajudar"><span class="icone">volunteer_activism</span> Quero Fazer Parte / Doar</a>
+        <a class="botao botao-amarelo" href="#como-ajudar"><span class="icone">volunteer_activism</span> Quero ajudar</a>
         <button class="botao botao-claro" type="button" data-abrir="janela-video">
-          <span class="play-bolinha"><span class="icone" style="font-size:18px">play_arrow</span></span> Assistir ao Vídeo Institucional
+          <span class="play-bolinha"><span class="icone" style="font-size:18px">play_arrow</span></span> Ver o vídeo institucional
         </button>
       </div>
     </div>
@@ -31,7 +30,7 @@
 <section class="faixa-numeros" id="numeros">
   <div class="container">
     <div class="faixa-topo">
-      <h2><span class="icone">bar_chart</span> Nossos Números</h2>
+      <h2><span class="icone">bar_chart</span> Nossos números</h2>
     </div>
     <div class="numeros">
       {% for icone, valor, texto in [
@@ -58,7 +57,7 @@
     <div class="cabeca-secao">
       <div>
         <span class="etiqueta">O que fazemos</span>
-        <h2 class="titulo-secao">Programas e Projetos</h2>
+        <h2 class="titulo-secao">Programas e projetos</h2>
         <p class="subtitulo">Atividades no contraturno escolar para as crianças e jovens atendidos pela AEPEC.</p>
       </div>
     </div>
@@ -67,7 +66,7 @@
       {% set fotos = fotos_projetos.get(p.id, []) %}
       <article class="cartao">
         <div class="cartao-foto">
-          {# Primeira foto do projeto. Sem foto, mostra "Em breve". #}
+          {# Primeira foto do projeto. Sem foto, mostra "Em breve" #}
           <img src="{{ url_for('static', filename=fotos[0]) if fotos else url_for('static', filename='img/em-breve.svg') }}" alt="{{ p.nome }}" loading="lazy">
           <span class="selo" data-cor="{{ p.cor }}">{{ p.selo }}</span>
         </div>
@@ -99,7 +98,7 @@
       {% if foto_local('video-capa') %}<img src="{{ foto_local('video-capa') }}" alt="" loading="lazy">{% endif %}
       <div class="video-conteudo">
         <button class="botao-play" type="button" data-abrir="janela-video" aria-label="Assistir ao vídeo institucional"><span class="icone">play_arrow</span></button>
-        <small>Vídeo Institucional{% if site.video_duracao %} • {{ site.video_duracao }}{% endif %}</small>
+        <small>Vídeo institucional{% if site.video_duracao %} ({{ site.video_duracao }}){% endif %}</small>
         <h3>Conheça a AEPEC</h3>
         <p>O dia a dia do Espaço Pequeno Cidadão, com depoimentos da equipe e de quem foi aluna e hoje é professora.</p>
       </div>
@@ -109,7 +108,7 @@
       <div class="galeria-cabeca">
         <div>
           <span class="etiqueta">Galeria</span>
-          <h3>Nosso Dia a Dia</h3>
+          <h3>Nosso dia a dia</h3>
         </div>
         {% if galeria %}
         <div class="abas" data-alvo="galeria" role="group" aria-label="Filtrar fotos">
@@ -146,8 +145,8 @@
         <div>
           <h3>@{{ site.instagram_usuario }}</h3>
           <p>
-            {% if site.instagram_seguidores %}<strong>{{ site.instagram_seguidores }}</strong> seguidores • {% endif %}
-            {% if site.instagram_publicacoes %}<strong>{{ site.instagram_publicacoes }}</strong> publicações • {% endif %}
+            {% if site.instagram_seguidores %}<strong>{{ site.instagram_seguidores }}</strong> seguidores, {% endif %}
+            {% if site.instagram_publicacoes %}<strong>{{ site.instagram_publicacoes }}</strong> publicações. {% endif %}
             Acompanhe nosso dia a dia
           </p>
         </div>
@@ -180,9 +179,8 @@
     <div class="ajudar-caixa">
       <div class="ajudar-topo">
         <div>
-          <small>Como Ajudar</small>
-          <h2>Três Maneiras de Apoiar Nossas Crianças</h2>
-          <p>Toda ajuda conta: dinheiro, tempo ou doação de itens.</p>
+          <small>Como ajudar</small>
+          <h2>Você pode doar dinheiro, itens ou o seu tempo</h2>
         </div>
         <button class="pix" type="button" data-copiar="{{ site.pix }}">
           <span class="icone">qr_code_2</span> Chave PIX: {{ site.pix }} <span class="icone" style="font-size:18px">content_copy</span>
@@ -191,20 +189,20 @@
       <div class="grade-ajuda">
         <div class="ajuda">
           <span class="quadrado" style="background:#fef3c7;color:#b45309"><span class="icone">savings</span></span>
-          <h3>Doação em Dinheiro</h3>
+          <h3>Doação em dinheiro</h3>
           <p>Doe qualquer valor pelo PIX e ajude a manter as atividades e a alimentação das crianças.</p>
           <button class="botao botao-amarelo botao-largo" type="button" data-info="financeira">Doar com PIX</button>
         </div>
         <div class="ajuda">
           <span class="quadrado" style="background:#dbeafe;color:#1a62d6"><span class="icone">handshake</span></span>
-          <h3>Seja Voluntário</h3>
+          <h3>Seja voluntário</h3>
           <p>Quer ajudar com seu tempo ou conhecimento? Fale com a gente para saber como participar.</p>
-          <button class="botao botao-azul botao-largo" type="button" data-info="voluntario">Quero ser Voluntário</button>
+          <button class="botao botao-azul botao-largo" type="button" data-info="voluntario">Quero ser voluntário</button>
         </div>
         <div class="ajuda">
           <span class="quadrado" style="background:#e0f2fe;color:#0d5cab"><span class="icone">kitchen</span></span>
-          <h3>Doação de Itens</h3>
-          <p>Quer doar alimentos, roupas ou materiais? Fale com a gente para combinar a entrega.</p>
+          <h3>Doação de itens</h3>
+          <p>A AEPEC recebe alimentos, roupas e materiais. Fale com a gente para combinar a entrega.</p>
           <button class="botao botao-cinza botao-largo" type="button" data-info="materiais">Como doar itens</button>
         </div>
       </div>
@@ -216,10 +214,10 @@
 <template id="info-financeira" data-titulo="Doação pelo PIX" data-pix="sim">
   <p>Sua doação ajuda a manter as atividades e a alimentação das crianças e jovens atendidos pela AEPEC.</p>
 </template>
-<template id="info-voluntario" data-titulo="Seja Voluntário na AEPEC">
+<template id="info-voluntario" data-titulo="Seja voluntário na AEPEC">
   <p>Mande um e-mail para <a class="link-seta" href="mailto:{{ site.email }}">{{ site.email }}</a> ou ligue para <a class="link-seta" href="tel:{{ site.telefone_link }}">{{ site.telefone }}</a> contando como você gostaria de ajudar.</p>
 </template>
-<template id="info-materiais" data-titulo="Doação de Itens">
+<template id="info-materiais" data-titulo="Doação de itens">
   <p>Para doar alimentos, roupas ou materiais, fale com a gente pelo telefone <a class="link-seta" href="tel:{{ site.telefone_link }}">{{ site.telefone }}</a> ou pelo e-mail <a class="link-seta" href="mailto:{{ site.email }}">{{ site.email }}</a> para combinar a entrega.</p>
   <p style="margin-top:10px">Nosso endereço: {{ site.endereco }}.</p>
 </template>
@@ -234,14 +232,14 @@
     <div class="janela-corpo">
       <div id="info-texto" style="color:var(--texto-2)"></div>
       <div class="caixa-pix" id="info-pix">
-        <strong style="color:var(--azul-texto);font-size:14px">Chave PIX Oficial (e-mail):</strong>
+        <strong style="color:var(--azul-texto);font-size:14px">Chave PIX (e-mail):</strong>
         <div class="linha">
           <code style="word-break:break-all">{{ site.pix }}</code>
           <button class="copiar" type="button" data-copiar="{{ site.pix }}"><span class="icone" style="font-size:16px">content_copy</span> Copiar</button>
         </div>
         {% if site.banco %}<small>{{ site.banco }}</small>{% endif %}
       </div>
-      <div class="janela-rodape"><button class="botao botao-amarelo" type="button" data-fechar>Entendi, obrigado!</button></div>
+      <div class="janela-rodape"><button class="botao botao-amarelo" type="button" data-fechar>Fechar</button></div>
     </div>
   </div>
 </div>
@@ -250,7 +248,7 @@
 <div class="janela" id="janela-video" role="dialog" aria-modal="true" aria-labelledby="video-titulo">
   <div class="janela-caixa janela-grande">
     <div class="janela-topo">
-      <h3 id="video-titulo"><span class="icone">play_circle</span> Vídeo Institucional AEPEC</h3>
+      <h3 id="video-titulo"><span class="icone">play_circle</span> Vídeo institucional da AEPEC</h3>
       <button class="fechar" type="button" data-fechar aria-label="Fechar"><span class="icone">close</span></button>
     </div>
     <div class="video-area">
@@ -279,7 +277,7 @@
 <div class="janela" id="janela-foto" role="dialog" aria-modal="true" aria-labelledby="foto-titulo">
   <div class="janela-caixa janela-grande">
     <div class="janela-topo">
-      <h3 id="foto-titulo">Foto da Galeria</h3>
+      <h3 id="foto-titulo">Foto da galeria</h3>
       <button class="fechar" type="button" data-fechar aria-label="Fechar"><span class="icone">close</span></button>
     </div>
     <div class="foto-ampliada"><img id="foto-img" src="" alt=""></div>

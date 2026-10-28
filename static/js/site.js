@@ -1,4 +1,4 @@
-// Interações do site (menu, modo escuro, janelas, filtros).
+// Interações do site: menu, modo escuro, janelas e filtros
 
 // ---------- Modo escuro ----------
 function aplicarTema(tema) {
@@ -125,7 +125,7 @@ document.querySelectorAll("[data-info]").forEach(function (b) {
 // Foto ampliada da galeria
 document.querySelectorAll("[data-ampliar]").forEach(function (b) {
   b.addEventListener("click", function () {
-    var titulo = b.getAttribute("data-titulo") || b.querySelector("img").alt || "Foto da Galeria";
+    var titulo = b.getAttribute("data-titulo") || b.querySelector("img").alt || "Foto da galeria";
     var texto = b.getAttribute("data-texto") || "";
     document.getElementById("foto-titulo").textContent = titulo;
     document.getElementById("foto-img").src = b.querySelector("img").src;

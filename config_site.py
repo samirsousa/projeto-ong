@@ -1,4 +1,4 @@
-# Dados do site em um lugar só.
+# Dados do site em um lugar só
 
 SITE = {
     "nome": "AEPEC",

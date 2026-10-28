@@ -1,4 +1,4 @@
-# Projetos da AEPEC.
+# Projetos da AEPEC
 
 PROJETOS = [
     {"id": "educacional", "selo": "Educação", "cor": "#004aae",
@@ -33,7 +33,7 @@ FOTOS_INICIAIS = {
 }
 
 # Galeria da página inicial quando o site abre
-# "tipo" é o filtro: edu (Educação), esporte (Esporte) ou evento (Eventos & Festas).
+# "tipo" é o filtro: edu (Educação), esporte (Esporte) ou evento (Eventos e festas)
 GALERIA_INICIAL = [
     {"foto": "img/fotos/projeto-educacional.jpg", "tipo": "edu", "titulo": "Programa Educacional Complementar", "texto": ""},
     {"foto": "img/fotos/projeto-biblioteca.jpg", "tipo": "edu", "titulo": "Biblioteca Comunitária", "texto": ""},

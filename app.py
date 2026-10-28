@@ -52,7 +52,7 @@ dados.preparar()
 # ---------- Funções usadas nas páginas ----------
 
 def foto_local(nome):
-    """Procura a foto em static/img/fotos. Devolve vazio se não tiver."""
+    """Procura a foto em static/img/fotos. Devolve vazio se não tiver"""
     for ext in ("jpg", "jpeg", "png", "webp"):
         if os.path.exists(os.path.join(PASTA_FOTOS, f"{nome}.{ext}")):
             return url_for("static", filename=f"img/fotos/{nome}.{ext}")
@@ -64,7 +64,7 @@ def foto_post(post):
 
 
 def tempo_relativo(iso):
-    """Transforma a data em texto como "Há 3 dias"."""
+    """Transforma a data em texto, por exemplo: Há 3 dias"""
     dias = (date.today() - datetime.fromisoformat(iso).date()).days
     if dias <= 0:
         return "Hoje"
@@ -113,7 +113,7 @@ def variaveis_das_paginas():
 
 
 def paragrafos(texto):
-    """Linha em branco vira parágrafo novo. Enter simples vira quebra de linha."""
+    """Linha em branco vira parágrafo novo. Enter simples vira quebra de linha"""
     blocos = [b.strip() for b in (texto or "").replace("\r\n", "\n").split("\n\n") if b.strip()]
     return Markup("".join(f"<p>{escape(b)}</p>".replace("\n", "<br>") for b in blocos))
 
@@ -131,7 +131,7 @@ def conferir_csrf():
 
 @app.after_request
 def cabecalhos_de_seguranca(resposta):
-    # Impede que outro site abra o nosso dentro de uma moldura (golpe de clique falso)
+    # Não deixa outro site abrir o nosso dentro de um iframe
     resposta.headers["X-Frame-Options"] = "DENY"
     resposta.headers["X-Content-Type-Options"] = "nosniff"
     resposta.headers["Referrer-Policy"] = "same-origin"
@@ -191,12 +191,12 @@ def login():
             dados.limpar_erros_login(ip)
             session.clear()
             session["admin"] = True
-            # "Manter conectado" deixa o login salvo por 31 dias.
+            # "Manter conectado" deixa o login salvo por 31 dias
             session.permanent = bool(request.form.get("lembrar"))
             return redirect(url_for("painel"))
         else:
             dados.registrar_erro_login(ip)
-            time.sleep(1)  # cada tentativa errada demora, o que deixa o ataque bem mais lento
+            time.sleep(1)  # espera 1 segundo a cada erro para atrasar quem testa muitas senhas
             erro = "E-mail ou senha incorretos."
     return render_template("login.html", erro=erro, pagina="login")
 
@@ -234,7 +234,7 @@ PADRAO_LINK = re.compile(
 
 
 def arrumar_link(link):
-    """Confere se é link de post do Instagram e deixa no formato padrão."""
+    """Confere se é link de post do Instagram e deixa no formato padrão"""
     achou = PADRAO_LINK.match(link.strip())
     if not achou:
         return None
@@ -244,7 +244,7 @@ def arrumar_link(link):
 
 def salvar_foto(arquivo, quadrada=False):
     """Salva a foto enviada, já reduzida para não pesar no site.
-    quadrada=True corta no meio em formato quadrado (fotos da equipe)."""
+    quadrada=True corta no meio em formato quadrado (fotos da equipe)"""
     try:
         foto = Image.open(arquivo.stream)
         foto.load()
@@ -304,7 +304,7 @@ def novo_post():
         hashtags=tags[:300],
         imagem=caminho_foto,
     )
-    flash("Post adicionado! Ele já aparece na página Nos Acompanhe.", "ok")
+    flash("Post adicionado. Ele já aparece na página Nos acompanhe.", "ok")
     return redirect(url_for("painel") + "#historico")
 
 
@@ -331,14 +331,14 @@ def mudar_senha():
         flash("A confirmação não é igual à nova senha.", "erro")
     else:
         dados.trocar_senha(f["nova"])
-        flash("Senha alterada com sucesso.", "ok")
+        flash("Senha alterada.", "ok")
     return redirect(url_for("painel") + "#seguranca")
 
 
 # ---------- Família AEPEC (equipe) no painel ----------
 
 def apagar_arquivo_foto(caminho):
-    """Apaga do disco só as fotos enviadas pelo painel (pasta uploads)."""
+    """Apaga do disco só as fotos enviadas pelo painel (pasta uploads)"""
     if caminho and caminho.startswith("uploads/"):
         arquivo = os.path.join(PASTA_APP, "static", caminho)
         if os.path.exists(arquivo):

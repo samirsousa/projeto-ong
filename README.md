@@ -1,8 +1,8 @@
 # Site AEPEC - Espaço Pequeno Cidadão
 
-Site institucional da **AEPEC (Associação Espaço Pequeno Cidadão)**, uma ONG de São Gonçalo (RJ) que atende crianças, jovens e famílias com educação no contraturno, alimentação, esporte e informática.
+Site da AEPEC (Associação Espaço Pequeno Cidadão), ONG de São Gonçalo (RJ) que atende crianças, jovens e famílias com educação no contraturno, alimentação, esporte e informática.
 
-O site apresenta a história e os projetos da ONG, a equipe (Família AEPEC), uma galeria de fotos, os posts do Instagram e as formas de doar. Também tem um painel do administrador onde a equipe da ONG atualiza o conteúdo sem mexer no código.
+O site mostra a história e os projetos da ONG, a equipe (Família AEPEC), fotos, os posts do Instagram e como doar. A equipe da AEPEC atualiza esse conteúdo por um painel do administrador, sem precisar mexer no código.
 
 ## Créditos - Time por trás dos códigos
 
@@ -13,58 +13,62 @@ O site apresenta a história e os projetos da ONG, a equipe (Família AEPEC), um
 | Professora | Theresa Prado Gondim |
 | Monitor | Daniel Oliveira |
 
-## Tecnologias utilizadas
+## Tecnologias
 
-| Tecnologia | Para que serve |
+| Tecnologia | Uso no projeto |
 |---|---|
-| Python 3 | Linguagem do servidor |
-| Flask | Framework que cria as páginas e as rotas do site |
+| Python 3 e Flask | Servidor, rotas e login |
 | Jinja | Modelos HTML que recebem os dados do Python |
 | SQLite | Banco de dados (um arquivo só, já vem com o Python) |
 | Pillow | Reduz e ajusta as fotos enviadas pelo painel |
 | HTML, CSS e JavaScript | Visual, modo escuro, menu do celular, filtros e animações |
-| Git e GitHub | Controle de versões do código |
+| Git e GitHub | Controle de versões |
 
-## Funcionalidades
+## O que o site tem
 
-- Página inicial com a história, os projetos, a galeria com filtros, o vídeo institucional e as formas de doar (com a chave PIX para copiar)
-- Página "Nos Acompanhe" com os posts do Instagram, separados por filtro
-- Página "Família AEPEC" com as fotos e a apresentação de cada pessoa da equipe
+- Página inicial com os projetos, os números da AEPEC, o vídeo institucional, a galeria com filtros e as formas de doar (a chave PIX copia com um clique)
+- Página Nos acompanhe, com os posts do Instagram separados por tipo
+- Página Família AEPEC, com foto e apresentação de cada pessoa da equipe
 - Modo claro e modo escuro
-- Layout que se adapta do celular ao monitor
-- Painel do administrador para:
-  - adicionar e tirar posts do Instagram (com histórico e data de inserção)
-  - adicionar, editar, excluir e mudar a ordem das pessoas da equipe
-  - adicionar, tirar e mudar a ordem das fotos dos projetos e da galeria
-  - trocar a senha
-- Login protegido: bloqueia por 15 minutos depois de várias senhas erradas
+- Layout para celular, tablet e computador
+- Painel do administrador para cadastrar posts, fotos, galeria e equipe
+- Login que bloqueia por 15 minutos depois de várias senhas erradas
 
 ## Páginas
 
 | Endereço | Página |
 |---|---|
 | `/` | Página inicial |
-| `/nos-acompanhe` | Página do Instagram |
-| `/familia-aepec` | Página da equipe (Família AEPEC) |
+| `/nos-acompanhe` | Posts do Instagram |
+| `/familia-aepec` | Equipe (Família AEPEC) |
 | `/admin/login` | Login do administrador |
 | `/admin` | Painel do administrador |
 
-### O que precisa ter instalado
+## Como rodar
 
-- Python 3.10 ou mais novo
-- Git
+Precisa de Python 3.10 ou mais novo e do Git. No GitHub Codespaces os dois já vêm instalados.
+
+```
+git clone <endereço do repositório>
+cd projeto-ong
+pip install -r requirements.txt
+flask --app app criar-admin
+python app.py
+```
+
+O `criar-admin` só precisa rodar na primeira vez. Ele pede o e-mail e a senha do administrador (mínimo de 8 caracteres). Para trocar uma senha esquecida, rode o mesmo comando de novo.
+
+Depois abra `http://127.0.0.1:5000` no navegador. No Codespaces, use a aba Ports e clique no globo da porta 5000. Para desligar o site, aperte Ctrl + C no terminal.
 
 ## Como usar o painel
 
-Entre em `/admin/login` com o e-mail e a senha criados no passo 3. O link de acesso fica no rodapé do site.
+O link do painel fica no rodapé do site, em "Acesso Administrativo (Restrito)". Entre com o e-mail e a senha criados pelo `criar-admin`.
 
-- **Posts do Instagram:** cole o link do post, escolha o filtro e o formato e, se quiser, envie uma imagem de capa. O post tirado do site continua no histórico e pode voltar.
-- **Fotos dos projetos:** adicionar, tirar e mudar a ordem. A primeira foto é a do cartão.
-- **Galeria:** adicionar, editar (filtro, título, descrição e foto), tirar e mudar a ordem.
-- **Família AEPEC:** adicionar, editar, excluir e mudar a ordem das pessoas. Cada pessoa pode ter até duas fotos.
-- **Segurança:** trocar a senha.
+Nos posts do Instagram, cole o link do post, escolha o tipo e o formato e, se quiser, envie uma foto de capa. Um post tirado do site continua no histórico e pode voltar a qualquer momento.
 
-Projeto sem foto mostra uma imagem preta escrita "Em breve".
+Nas fotos dos projetos e na galeria dá para adicionar, tirar e mudar a ordem. A primeira foto de cada projeto aparece no cartão da página inicial, e projeto sem foto mostra uma imagem preta escrita "Em breve". Na galeria também dá para editar o filtro, o título e a descrição.
+
+Na Família AEPEC dá para adicionar, editar, excluir e mudar a ordem das pessoas. Cada pessoa pode ter até duas fotos (a segunda é para duplas).
 
 ## Estrutura do projeto
 
@@ -75,7 +79,7 @@ projeto-ong/
 ├── schema.sql         tabelas do banco
 ├── config_site.py     telefone, e-mail, PIX, endereço, Instagram
 ├── projetos.py        nome e resumo dos projetos
-├── equipe_inicial.py  equipe que vem pronta na primeira vez
+├── equipe_inicial.py  equipe que entra no banco na primeira vez
 ├── requirements.txt   bibliotecas do Python
 ├── templates/         páginas HTML
 │   ├── partes/        cabeçalho, rodapé e cartão de post
@@ -90,27 +94,27 @@ projeto-ong/
 
 ## Onde ficam os dados
 
-Os dados ficam no banco SQLite `dados/aepec.db`. Ele é criado sozinho na primeira vez que o site roda, já com a equipe e as fotos iniciais. As tabelas estão descritas em `schema.sql`:
+O banco SQLite fica em `dados/aepec.db`. Ele é criado na primeira vez que o site roda, já com a equipe e as fotos iniciais. As tabelas estão em `schema.sql`:
 
 | Tabela | O que guarda |
 |---|---|
-| `admin` | e-mail e senha do administrador (a senha fica protegida, não dá para ler) |
-| `posts` | posts do Instagram e o histórico |
+| `admin` | e-mail e senha do administrador (a senha é salva como hash) |
+| `posts` | posts do Instagram, inclusive os que saíram do site |
 | `equipe` e `equipe_fotos` | pessoas da Família AEPEC e as fotos delas |
 | `projeto_fotos` | fotos de cada projeto |
 | `galeria` | fotos da galeria da página inicial |
-| `tentativas_login` | senhas erradas, para bloquear quem tenta adivinhar |
+| `tentativas_login` | senhas erradas, usadas no bloqueio do login |
 
-As fotos enviadas pelo painel ficam em `static/uploads/`. A pasta `dados/` e a pasta `uploads/` não vão para o GitHub.
+As fotos enviadas pelo painel ficam em `static/uploads/`. As pastas `dados/` e `static/uploads/` estão no `.gitignore` e não vão para o GitHub.
 
 ## Onde mudar as coisas
 
 | O que | Onde |
 |---|---|
-| Telefone, e-mail, PIX, endereço, números do Instagram, vídeo | `config_site.py` |
+| Telefone, e-mail, PIX, endereço, números do Instagram e vídeo | `config_site.py` |
 | Texto completo de cada projeto | `templates/projetos/` (um arquivo por projeto) |
 | Nome e resumo dos projetos | `projetos.py` |
-| Cores do site (claro e escuro) | começo do arquivo `static/css/estilo.css` |
+| Cores do site (claro e escuro) | começo de `static/css/estilo.css` |
 | Logo | `static/img/logo.png` e `static/img/logo-360.png` |
 | Ícone da aba | `static/img/favicon.ico` |
 | Vídeo institucional | `static/video/institucional.mp4` (capa em `static/video/capa.jpg`) |

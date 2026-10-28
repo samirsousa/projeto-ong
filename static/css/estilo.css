@@ -1,4 +1,4 @@
-/* Estilo do site AEPEC.
+/* Estilo do site AEPEC
    As cores ficam nas variáveis abaixo e o modo escuro só troca elas */
 
 /* ---------- Cores do modo claro ---------- */
@@ -95,7 +95,6 @@ p { margin: 0; }
   -webkit-font-feature-settings: "liga"; font-feature-settings: "liga";
   user-select: none; flex-shrink: 0;
 }
-.icone.cheio { font-variation-settings: "FILL" 1; }
 
 .container { width: 100%; max-width: 1240px; margin: 0 auto; padding: 0 16px; }
 @media (min-width: 768px) { .container { padding: 0 24px; } }
@@ -162,7 +161,7 @@ p { margin: 0; }
   padding: 8px 12px; border-radius: 999px; font-size: 14px; font-weight: 600; color: var(--texto-2);
   display: inline-flex; align-items: center; gap: 6px; transition: color .2s, background-color .2s; white-space: nowrap;
 }
-/* Em telas médias o espaço é curto então isso esconde o subtítulo (a logo já tem o nome) */
+/* Em telas médias falta espaço, então o subtítulo some (a logo já tem o nome) */
 @media (min-width: 1180px) and (max-width: 1440px) {
   .cabecalho:not(.cabecalho-admin) .marca-texto span { display: none; }
   .menu a { padding: 8px 10px; }
@@ -219,8 +218,6 @@ main { padding-top: 76px; }
 .hero-grade { position: relative; display: grid; gap: 48px; align-items: center; }
 @media (min-width: 1024px) { .hero-grade { grid-template-columns: 7fr 5fr; } }
 .hero-texto { display: flex; flex-direction: column; gap: 18px; }
-.pulso { width: 8px; height: 8px; border-radius: 50%; background: var(--amarelo); position: relative; }
-.pulso::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: inherit; animation: pulsar 1.6s infinite; }
 @keyframes pulsar { 0% { transform: scale(1); opacity: .8; } 100% { transform: scale(2.6); opacity: 0; } }
 .hero h1 { font-size: clamp(34px, 5.2vw, 52px); font-weight: 800; letter-spacing: -0.02em; line-height: 1.15; }
 .destaque-amarelo { color: var(--amarelo-destaque); position: relative; white-space: nowrap; }
@@ -228,39 +225,6 @@ main { padding-top: 76px; }
 .hero-texto > p { font-size: 18px; line-height: 1.6; color: var(--texto-2); max-width: 640px; }
 .hero-botoes { display: flex; flex-wrap: wrap; gap: 12px; padding-top: 6px; }
 .play-bolinha { width: 30px; height: 30px; border-radius: 50%; background: var(--azul); color: #fff; display: inline-flex; align-items: center; justify-content: center; }
-.selos-confianca { display: flex; flex-wrap: wrap; gap: 20px; padding-top: 4px; font-size: 14px; font-weight: 600; color: var(--texto-2); }
-.selos-confianca a { display: inline-flex; align-items: center; gap: 6px; }
-.selos-confianca a:hover { color: var(--azul-texto); }
-
-.hero-fotos { position: relative; display: flex; justify-content: center; padding: 16px 12px 0; }
-.hero-foto-principal { position: relative; width: 100%; max-width: 440px; aspect-ratio: 4 / 5; border-radius: 40px; overflow: hidden; box-shadow: var(--sombra-3); background: var(--cartao-2); }
-.hero-foto-principal img { width: 100%; height: 100%; object-fit: cover; }
-.hero-foto-principal::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, rgba(0, 74, 174, .82), transparent 55%); }
-.hero-legenda { position: absolute; left: 24px; right: 24px; bottom: 22px; color: #fff; z-index: 1; }
-.hero-legenda span { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #ffddb8; }
-.hero-legenda h3 { font-size: 22px; font-weight: 600; }
-.hero-foto-menor {
-  position: absolute; left: -12px; bottom: -28px; width: 180px; aspect-ratio: 1; border-radius: 18px; overflow: hidden;
-  border: 4px solid var(--fundo); box-shadow: var(--sombra-3); display: none; z-index: 2;
-}
-.hero-foto-menor img { width: 100%; height: 100%; object-fit: cover; }
-@media (min-width: 640px) {
-  .hero-foto-menor { display: block; }
-  /* A legenda fica à direita para não ficar embaixo da foto menor */
-  .hero-legenda { left: 180px; text-align: right; }
-}
-.flutuante {
-  position: absolute; z-index: 3; display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 16px;
-  background: var(--cartao); box-shadow: var(--sombra-2);
-}
-.flutuante .quadrado { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; }
-.flutuante strong { display: block; font-family: "Outfit", sans-serif; font-size: 18px; line-height: 1; }
-.flutuante small { font-size: 11px; font-weight: 700; color: var(--texto-2); }
-.flutuante-1 { top: 0; right: 0; }
-.flutuante-2 { bottom: 150px; right: -4px; }
-@media (min-width: 1024px) { .flutuante-2 { right: -20px; } }
-.q-amarelo { background: #fef3c7; color: #b45309; }
-.q-azul { background: #dbeafe; color: #1a62d6; }
 
 /* ---------- Faixa de números ---------- */
 .faixa-numeros { background: var(--faixa); color: #fff; padding: 36px 0; }
@@ -425,10 +389,6 @@ main { padding-top: 76px; }
 .video-area iframe, .video-area video { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; background: #000; }
 .video-aviso { position: relative; color: #fff; text-align: center; padding: 20px; display: flex; flex-direction: column; align-items: center; gap: 8px; }
 .video-aviso .icone { font-size: 40px; color: #fcd34d; }
-.lista-projetos { display: grid; gap: 12px; }
-.lista-projetos div { background: var(--fundo-alt); border: 1px solid var(--borda); border-radius: 14px; padding: 14px 16px; }
-.lista-projetos h4 { color: var(--azul-texto); font-size: 17px; }
-.lista-projetos p { color: var(--texto-2); font-size: 14px; margin-top: 4px; }
 .foto-ampliada { background: #000; display: flex; justify-content: center; }
 .foto-ampliada img { max-height: 65vh; width: auto; object-fit: contain; }
 
@@ -512,23 +472,6 @@ main { padding-top: 76px; }
 .contadores .amarelo { color: #fbbf24; }
 .contadores span { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: #dbeafe; }
 
-.destaques { background: var(--cartao); border-bottom: 1px solid var(--borda); padding: 28px 0; }
-.destaques-topo { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; gap: 12px; }
-.destaques-topo h2 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .14em; display: flex; align-items: center; gap: 8px; font-family: "Plus Jakarta Sans", sans-serif; }
-.destaques-topo h2::before { content: ""; width: 10px; height: 10px; border-radius: 50%; background: var(--azul); }
-.destaques-topo small { font-size: 12px; color: var(--texto-3); }
-.stories { display: flex; gap: 22px; overflow-x: auto; padding: 6px 2px 8px; scrollbar-width: none; scroll-snap-type: x mandatory; }
-.stories::-webkit-scrollbar { display: none; }
-@media (min-width: 640px) { .stories { gap: 30px; } }
-.story { display: flex; flex-direction: column; align-items: center; gap: 8px; width: 80px; flex-shrink: 0; scroll-snap-align: start; }
-.story .anel { width: 74px; height: 74px; padding: 2.5px; transition: transform .2s; }
-@media (min-width: 640px) { .story .anel { width: 80px; height: 80px; } }
-.story .anel .dentro { background: var(--fundo); color: var(--azul-texto); transition: background-color .2s, color .2s; padding: 0; }
-.story:hover .anel { transform: scale(1.06); }
-.story:hover .anel .dentro { background: var(--azul); color: #fff; }
-.story .icone { font-size: 28px; }
-.story span { font-size: 12px; font-weight: 700; color: var(--texto-2); max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-
 .filtros { padding: 22px 0; }
 .filtros .container { display: flex; flex-direction: column; gap: 12px; align-items: stretch; }
 @media (min-width: 768px) { .filtros .container { flex-direction: row; align-items: center; justify-content: space-between; } }
@@ -605,7 +548,6 @@ main { padding-top: 76px; }
 .login-form .interno { width: 100%; max-width: 440px; margin: 0 auto; display: flex; flex-direction: column; gap: 18px; }
 .login-form h1 { font-size: 30px; font-weight: 700; }
 .login-form .intro { color: var(--texto-2); font-size: 14px; line-height: 1.6; }
-.selo-restrito { background: var(--azul-suave); color: var(--azul-texto); }
 .lembrar { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--texto-2); cursor: pointer; }
 .lembrar input { width: 18px; height: 18px; accent-color: var(--azul); }
 

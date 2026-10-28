@@ -1,10 +1,10 @@
-{# Rodapé igual em todas as páginas públicas. #}
+{# Rodapé igual em todas as páginas públicas #}
 {% set raiz = '' if pagina == 'inicio' else url_for('inicio') %}
 <footer class="rodape">
   <div class="container">
     <div class="citacao">
       <p>“Educação não transforma o mundo. Educação muda pessoas. Pessoas transformam o mundo.”</p>
-      <span>— Paulo Freire</span>
+      <span>Paulo Freire</span>
     </div>
 
     <div class="rodape-grade">
@@ -22,24 +22,21 @@
       </div>
 
       <div>
-        <h3>Acesso Rápido</h3>
+        <h3>Acesso rápido</h3>
         <ul>
-          <li><a href="{{ raiz }}#nossa-historia"><span class="icone">chevron_right</span> Nossa História</a></li>
-          <li><a href="{{ raiz }}#programas-projetos"><span class="icone">chevron_right</span> Programas e Projetos</a></li>
+          <li><a href="{{ raiz }}#nossa-historia"><span class="icone">chevron_right</span> Nossa história</a></li>
+          <li><a href="{{ raiz }}#programas-projetos"><span class="icone">chevron_right</span> Programas e projetos</a></li>
           <li><a href="{{ raiz }}#impacto-galeria"><span class="icone">chevron_right</span> Galeria</a></li>
           <li><a href="{{ url_for('familia') }}"><span class="icone">chevron_right</span> Família AEPEC</a></li>
-          <li><a href="{{ raiz }}#numeros"><span class="icone">chevron_right</span> Nossos Números</a></li>
-          <li><a href="{{ raiz }}#como-ajudar"><span class="icone">chevron_right</span> Seja Voluntário ou Doador</a></li>
-          <li><a href="{{ url_for('nos_acompanhe') }}"><span class="icone">chevron_right</span> Nos Acompanhe no Instagram</a></li>
+          <li><a href="{{ raiz }}#numeros"><span class="icone">chevron_right</span> Nossos números</a></li>
+          <li><a href="{{ raiz }}#como-ajudar"><span class="icone">chevron_right</span> Seja voluntário ou doador</a></li>
+          <li><a href="{{ url_for('nos_acompanhe') }}"><span class="icone">chevron_right</span> Nos acompanhe no Instagram</a></li>
           <li><a href="{{ url_for('login') }}" style="color:#94a3b8"><span class="icone" style="color:#94a3b8">lock</span> Acesso Administrativo (Restrito)</a></li>
         </ul>
       </div>
 
       <div class="rodape-redes">
-        <span class="selo" style="background:rgba(251,191,36,.15);color:#fcd34d;text-transform:uppercase;letter-spacing:.06em;font-size:11px">
-          <span class="pulso"></span> Comunidade &amp; Histórias Vivas
-        </span>
-        <h3>Fique Conectado nas Redes</h3>
+        <h3>Redes sociais</h3>
         <p>Acompanhe o dia a dia das nossas crianças e jovens no Instagram.</p>
         <div class="redes">
           <a class="botao botao-ig botao-pequeno" href="{{ url_for('nos_acompanhe') }}"><span class="icone">photo_camera</span> Nos acompanhe!</a>
@@ -50,6 +47,6 @@
       </div>
     </div>
 
-    <p class="copyright">© {{ ano }} AEPEC - {{ site.nome_completo }}. Todos os direitos reservados. Compromisso com a infância e a cidadania.</p>
+    <p class="copyright">© {{ ano }} {{ site.nome_completo }} (AEPEC)</p>
   </div>
 </footer>

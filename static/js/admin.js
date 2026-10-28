@@ -1,4 +1,4 @@
-// Interações do painel do administrador.
+// Interações do painel do administrador
 
 var form = document.getElementById("form-post");
 
@@ -31,7 +31,7 @@ form.addEventListener("reset", function () {
 });
 
 // ---------- Link do Instagram ----------
-// Confere o link e escolhe o formato "Reels" sozinho quando o link é de reels.
+// Confere o link e marca o formato "Reels" quando o link é de reels
 var padraoLink = /^(?:https?:\/\/)?(?:www\.)?instagram\.com\/(?:[A-Za-z0-9_.]+\/)?(p|reel|reels|tv)\/([A-Za-z0-9_-]+)/;
 
 texto("link").addEventListener("input", function () {
