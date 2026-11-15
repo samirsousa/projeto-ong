@@ -10,7 +10,7 @@ O site apresenta a história e os projetos da ONG, a equipe (Família AEPEC), um
 |---|---|
 | Coordenador do grupo | Kaleo Accacio Pereira Lemos |
 | Programadores | Samir Firmino Martins de Sousa, Guilherme Amorim Pereira de Araujo, Kaleo Accacio Pereira Lemos |
-| Professora | Theresa Prado Gondim |
+| Professora | Thereza Prado Gondim |
 | Monitor | Daniel Oliveira |
 
 ## Tecnologias utilizadas
@@ -95,7 +95,7 @@ Na primeira vez que o site roda, ele cria sozinho o banco de dados, já com a eq
 
 ## Senha e acesso ao painel
 
-### Esqueceu a senha
+### Esqueceu a senha?
 
 Rode de novo o comando do passo 3:
 
